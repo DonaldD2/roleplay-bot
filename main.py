@@ -60,8 +60,14 @@ async def on_ready():
 
 @client.event
 async def on_member_join(member):
-    role = discord.utils.get(member.server.roles, id="<873214733740814406>")
-    await bot.add_roles(member, role)
+    if member.guild.id == 873041677361770536:
+        role = discord.utils.get(member.guild.roles, id=873214733740814406)
+        await member.add_roles(role)
+        channel = client.get_channel(873377288643833867)
+        await channel.send(f"Welcome <@{member.id}> to the Roleplay Bot Support server! Feel free to look around and have a chat. if you have a bug to report, use <#873216377341755432>. If you have a suggestion, use <#873216353937539072>. if you need help with the bot, use <#873216334396260402>. Hope you enjoy using the bot!")
+        
+
+
 
 @slash.slash(name="help", description="Sends you a list of my commands")
 async def help(ctx):
@@ -238,7 +244,7 @@ async def engoff(ctx):
 
 #####################################################################
 
-"""
+
 
 #added
 @client.command(aliases=["commands","cmds", "command", "cmd"])
@@ -473,6 +479,6 @@ async def contact(ctx, user:discord.Member):
 
 
 
-"""
+
 keep_alive()
 client.run(token)
