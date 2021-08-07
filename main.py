@@ -1,4 +1,3 @@
-
 from discord.ext.commands.core import dm_only
 from keep_alive import keep_alive
 import discord
