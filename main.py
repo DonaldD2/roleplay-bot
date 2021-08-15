@@ -36,7 +36,7 @@ from discord import Activity, ActivityType
 #-----CONFIGURATION-----
 
 prefix = "?" # What symbol(s) will trigger a command
-token = "ODcyNTY4NDMwMjUzOTgxNzg2.YQrwrQ.kmKJvOz5YfH5KgOBjHr2v1m2lj8" # Bot login authentication
+token = "" # Bot login authentication
 test_guilds = [769260943602483230]
 with open("ids.json","r") as f:
     paid=json.load(f)
