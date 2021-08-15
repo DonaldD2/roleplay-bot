@@ -1,3 +1,4 @@
+
 from discord.ext.commands.core import dm_only
 from keep_alive import keep_alive
 import discord
@@ -35,13 +36,15 @@ from discord import Activity, ActivityType
 #-----CONFIGURATION-----
 
 prefix = "?" # What symbol(s) will trigger a command
-token = "" # Bot login authentication
+token = "ODcyNTY4NDMwMjUzOTgxNzg2.YQrwrQ.kmKJvOz5YfH5KgOBjHr2v1m2lj8" # Bot login authentication
 test_guilds = [769260943602483230]
+with open("ids.json","r") as f:
+    paid=json.load(f)
 
 #-----CONFIG ENDS HERE!-----
 
 login = time.time()
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix = prefix, intents=intents, case_insensitive=True)
 slash = SlashCommand(client, sync_commands=True)
@@ -64,8 +67,12 @@ async def on_member_join(member):
         await member.add_roles(role)
         channel = client.get_channel(873377288643833867)
         await channel.send(f"Welcome <@{member.id}> to the Roleplay Bot Support server! Feel free to look around and have a chat. if you have a bug to report, use <#873216377341755432>. If you have a suggestion, use <#873216353937539072>. if you need help with the bot, use <#873216334396260402>. Hope you enjoy using the bot!")
-        
 
+@client.event
+async def on_guild_join(guild):
+    for channel in guild.text_channels:
+        if channel.permissions_for(guild.me).send_messages:
+            await channel.send("Hey!:wave: Thanks for inviting me to your server. \nTo see a list of my commands do /help \nTo seek help, support, suggest features, or just to hang around join my support server: https://discord.gg/PjemhcxcpM \nHappy RPing!\n\n-Developers")
 
 
 @slash.slash(name="help", description="Sends you a list of my commands")
@@ -75,7 +82,7 @@ async def help(ctx):
   embed=discord.Embed(description="__**Roleplay Bot Commands**__\nCommands marked with `*` require you to `@mention` the user!**.", color=0x004cff)
   for key,value in commands.items():
     embed.add_field(name=f"{prefix}{key}", value=value, inline=False)
-    embed.set_thumbnail(url="https://c.file.glass/ihdhj")
+    embed.set_thumbnail(url="https://i.file.glass/ihdhj")
   await ctx.author.send(embed=embed)
   await ctx.send(embed=discord.Embed(description="**I have messaged you a list of my commands!**", color=0x004cff))
 
@@ -243,7 +250,7 @@ async def engoff(ctx):
 
 #####################################################################
 
-
+"""
 
 #added
 @client.command(aliases=["commands","cmds", "command", "cmd"])
@@ -251,10 +258,10 @@ async def help(ctx):
   with open("commands.json","r") as f:
     commands = json.load(f)
 
-  embed=discord.Embed(description="__**ExiaRP Commands**__\nCommands marked with `*` require you to `@mention` the user!\nBot made by **ExiaRP Development Team**.", color=0x004cff, timestamp=ctx.message.created_at)
+  embed=discord.Embed(description="__**Roleplay Bot Commands**__\nCommands marked with `*` require you to `@mention` the user!", color=0x004cff, timestamp=ctx.message.created_at)
   for key,value in commands.items():
     embed.add_field(name=f"{prefix}{key}", value=value, inline=False)
-    embed.set_thumbnail(url="https://cdn.discordapp.com/icons/527703359893930019/974dccedb450e41ef6efde6a974353e6.webp")
+    embed.set_thumbnail(url="https://i.file.glass/ihdhj")
   await ctx.author.send(embed=embed)
   if ctx.message.guild != None:
     await ctx.send(embed=discord.Embed(description="**I have messaged you a list of my commands!**", color=0x004cff))
@@ -388,12 +395,9 @@ async def engoff(ctx):
 async def twotter(ctx,*,content):
     if ctx.message.guild != None:
       await ctx.message.delete()
-    embed=discord.Embed(title="<:twitter:858110570087972884> TWOTTER",description=f"{content}", color=0x1DA1F2,timestamp=ctx.message.created_at)
-    if ctx.author.id == 270197742016397314 or ctx.author.id == 707353661088595988 or ctx.author.id == 806875351384719370 or ctx.author.id == 214368408215486464 or ctx.author.id == 550503935715311637 or ctx.author.id == 426658450089574402 or ctx.author.id == 258272353908293652 or ctx.author.id == 318203855365996544 or ctx.author.id == 824104012831391765:
-      embed=discord.Embed(title="<:verified:869045206857711657> TWOTTER **Verified**",description=f"{content}", color=0x1DA1F2,timestamp=ctx.message.created_at)
-    else:
-      embed=discord.Embed(title="<:twitter:858110570087972884> TWOTTER",description=f"{content}", color=0x1DA1F2,timestamp=ctx.message.created_at)
+    embed=discord.Embed(title="<:twitter:858110570087972884> TWOTTER",description=f"{content}", color=0x1DA1F2)
     embed.set_author(name=f"@{ctx.author.display_name}", icon_url=ctx.author.avatar_url)
+    embed.set_footer(text="Twotter for iFruit", icon_url="https://cdn.discordapp.com/emojis/858110570087972884.png?v=1")
     await ctx.send(embed=embed)
 
 #added
@@ -475,7 +479,7 @@ async def contact(ctx, user:discord.Member):
       await msg.edit(content=f"**❌ {user.display_name} was not reachable.**")
 
 
-
+"""
 
 
 

@@ -1,6 +1,5 @@
 {
     "help": "Shows this message.",
-    "info": "Shows an information panel.",
     "cuff *": "Applies handcuffs to a user.",
     "uncuff *": "Removes handcuffs from a user.",
     "read-id *": "Reads a civilian's ID.",
@@ -8,16 +7,18 @@
     "ping *": "Share your location with another user.",
     "search *": "Search a user.",
     "tackle *": "Tackles a member to the ground.",
-    "finish *": "Finishes a member off and kills them.",
-    "check *": "Checks a user's vitals.",
+    "vitals *": "Checks a user's vitals.",
     "lock": "Locks your vehicle.",
     "unlock": "Unlocks your vehicle.",
-    "pin-down *": "Pins a user down to the ground.",
+    "pindown *": "Pins a user down to the ground.",
     "rack-weapon": "Stores your weapon.",
     "reload": "Reloads your weapon.",
     "refuel": "Refuel a vehicle.",
     "eng-on": "Turn on your vehicle engine.",
     "eng-off": "Turn off your vehicle engine.",
     "call *": "Calls a user through your phone.",
-    "tweet": "Tweet out something."
+    "twt": "Tweet out something.",
+    "life": "Sends a life invader message",
+    "tor": "Sends a tor message"
+
 }

@@ -2,6 +2,7 @@ from flask import Flask
 from threading import Thread
 import random
 
+
 app = Flask('')
 
 @app.route('/')
