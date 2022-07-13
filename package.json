@@ -1,0 +1,44 @@
+{
+    "name": "new-rp-bot",
+    "version": "1.0.0",
+    "description": "rp bot",
+    "main": "./dist/index.js",
+    "scripts": {
+        "Bot": "nodemon ./dist/index.js",
+        "Format": "npx prettier --write .",
+        "TS Watch": "tsc --watch"
+    },
+    "repository": "git+https://github.com/subtosharki/new-rp-bot.git",
+    "keywords": [
+        "rp",
+        "bot",
+        "discord",
+        "discord-bot",
+        "roleplay",
+        "gta",
+        "gtav",
+        "gtavrp",
+        "gtarp"
+    ],
+    "author": "subtosharki",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/subtosharki/new-rp-bot/issues"
+    },
+    "homepage": "https://github.com/subtosharki/new-rp-bot#readme",
+    "dependencies": {
+        "@discordjs/builders": "^0.15.0",
+        "@discordjs/rest": "^0.5.0",
+        "@types/node": "^18.0.0",
+        "consola": "^2.15.3",
+        "discord-api-types": "^0.34.0",
+        "discord.js": "^13.8.0",
+        "mongoose": "^6.4.3",
+        "random-mobile-numbers": "^1.0.1",
+        "yarn": "^1.22.19"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.19",
+        "prettier": "^2.7.1"
+    }
+}
