@@ -29,6 +29,7 @@ export = {
             async (err, inventory) => {
                 if (err) console.log(err);
                 if (inventory) {
+                    if('items' in inventory) {
                     if (inventory!.items.length > 0) {
                         inventory?.items.forEach((item) => {
                             Found.description += `${item},\n`;
@@ -38,6 +39,7 @@ export = {
                         Found.description = 'No items Found';
                         await interaction.editReply({ embeds: [Found] });
                     }
+                }
                 }
             }
         );

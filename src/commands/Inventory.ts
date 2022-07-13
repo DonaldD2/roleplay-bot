@@ -164,6 +164,20 @@ export = {
                 }
             );
         } else if (interaction.options.getSubcommand() === 'reset') {
+            Inventory.findOne(
+                //@ts-ignore
+                { discordId: `${interaction.member?.id}` },
+                null,
+                async (err, inventory) => {
+                    if (err) console.log(err);  
+                    if (!inventory) {
+                        await interaction.reply({
+                            content: `You don't have any items`,
+                            ephemeral: true,
+                        });
+                        return;
+                    }
+                })
             Inventory.findOneAndDelete(
                 //@ts-ignore
                 { discordId: `${interaction.member?.id}` },
