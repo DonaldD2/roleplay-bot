@@ -56,9 +56,10 @@ export = {
                 },
             });
             if (server!.verifiedUsers.includes(user!.id)) {
-                await interaction.reply({content:
-                    `${user!.username} is already verified`
-                , ephemeral: true});
+                await interaction.reply({
+                    content: `${user!.username} is already verified`,
+                    ephemeral: true,
+                });
                 return;
             }
             server?.verifiedUsers.push(user?.id as string);
@@ -79,7 +80,10 @@ export = {
                 },
             });
             if (!server!.verifiedUsers.includes(user!.id)) {
-                await interaction.reply({content: `${user!.username} is not verified`, ephemeral: true});
+                await interaction.reply({
+                    content: `${user!.username} is not verified`,
+                    ephemeral: true,
+                });
                 return;
             }
             server?.verifiedUsers.splice(

@@ -264,27 +264,27 @@ export = {
                 async (err, phone) => {
                     if (err) console.log(err);
                     let contacts = '';
-                    if('contacts' in phone!) {
-                    if (phone!.contacts.length > 0) {
-                        phone!.contacts.forEach((contact) => {
-                            contacts += `${contact.name}: ${contact.number}\n`;
-                        });
-                        await interaction.reply({
-                            embeds: [
-                                {
-                                    title: 'Contacts',
-                                    description: `${contacts}`,
-                                },
-                            ],
-                            ephemeral: true,
-                        });
-                    } else {
-                        await interaction.reply({
-                            content: `You have no contacts!`,
-                            ephemeral: true,
-                        });
+                    if ('contacts' in phone!) {
+                        if (phone!.contacts.length > 0) {
+                            phone!.contacts.forEach((contact) => {
+                                contacts += `${contact.name}: ${contact.number}\n`;
+                            });
+                            await interaction.reply({
+                                embeds: [
+                                    {
+                                        title: 'Contacts',
+                                        description: `${contacts}`,
+                                    },
+                                ],
+                                ephemeral: true,
+                            });
+                        } else {
+                            await interaction.reply({
+                                content: `You have no contacts!`,
+                                ephemeral: true,
+                            });
+                        }
                     }
-                }
                 }
             );
         } else if (interaction.options.getSubcommand() === 'get-number') {

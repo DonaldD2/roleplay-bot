@@ -69,12 +69,9 @@ const rest: REST = new REST({ version: '9' }).setToken(env.TOKEN!);
 
 (async () => {
     try {
-        await rest.put(
-            Routes.applicationCommands(env.CLIENTID),
-            {
-                body: commands,
-            }
-        );
+        await rest.put(Routes.applicationCommands(env.CLIENTID), {
+            body: commands,
+        });
 
         consola.success('Successfully registered application commands.');
     } catch (error) {
