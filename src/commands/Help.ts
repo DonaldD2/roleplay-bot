@@ -30,34 +30,8 @@ export = {
             .setFooter({ text: 'Page 1/3' })
             .setTimestamp();
 
-        const main2: MessageEmbed = new MessageEmbed()
-            .setColor('#004cff')
-            .setAuthor({
-                name: `${author}`,
-                iconURL: `https://cdn.discordapp.com/avatars/${userID}/${avatar}.webp?size=256`,
-            })
-            .setTitle('Command List')
-            .setFooter({ text: 'Page 2/3' })
-            .setTimestamp();
-
-        const main3: MessageEmbed = new MessageEmbed()
-            .setColor('#004cff')
-            .setAuthor({
-                name: `${author}`,
-                iconURL: `https://cdn.discordapp.com/avatars/${userID}/${avatar}.webp?size=256`,
-            })
-            .setTitle('Command List')
-            .setFooter({ text: 'Page 3/3' })
-            .setTimestamp();
-
         for (let i = 0; i < commands.length; i++) {
             main.addField(commands[i].name, commands[i].description, true);
-        }
-        for (let i = 25; i < commands.length; i++) {
-            main2.addField(commands[i].name, commands[i].description, true);
-        }
-        for (let i = 50; i < commands.length; i++) {
-            main3.addField(commands[i].name, commands[i].description, true);
         }
         if (interaction.options.getString('command')) {
             const cmdsearch = interaction.options.getString('command');
@@ -89,7 +63,7 @@ export = {
             }
         } else {
             await interaction.reply({
-                embeds: [main, main2, main3],
+                embeds: [main],
                 ephemeral: true,
             });
         }
