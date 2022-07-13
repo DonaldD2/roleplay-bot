@@ -264,6 +264,7 @@ export = {
                 async (err, phone) => {
                     if (err) console.log(err);
                     let contacts = '';
+                    if('contacts' in phone!) {
                     if (phone!.contacts.length > 0) {
                         phone!.contacts.forEach((contact) => {
                             contacts += `${contact.name}: ${contact.number}\n`;
@@ -283,6 +284,7 @@ export = {
                             ephemeral: true,
                         });
                     }
+                }
                 }
             );
         } else if (interaction.options.getSubcommand() === 'get-number') {

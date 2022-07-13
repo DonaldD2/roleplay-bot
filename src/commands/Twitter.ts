@@ -50,12 +50,6 @@ export = {
                 Tweet.setImage(
                     `${interaction.options.getAttachment('image')?.proxyURL}`
                 );
-            if (interaction.options.getAttachment('image'))
-                Tweet.setImage(
-                    `${interaction.options.getAttachment('image')?.proxyURL}`
-                );
-            Twitter.findOne({ discordId: interaction.member?.user.id });
-
             Server.findOne(
                 { serverId: interaction.guild?.id },
                 'verifiedUsers',
@@ -115,7 +109,8 @@ export = {
                                     ephemeral: true,
                                 });
                                 msg.react('<:like:995422257600016414>');
-                                msg.react('<:retweet:995421485063745706>');
+                                // msg.react('<:retweet:995421485063745706>');
+                                Tweet.setImage('');
                             })
                             .then(async () => {
                                 if (

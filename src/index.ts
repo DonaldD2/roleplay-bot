@@ -11,7 +11,7 @@ connection.once('open', () => {
     consola.success('Connected to Database!');
 });
 
-const intents: Intents = new Intents(32767);
+const intents = new Intents(32767);
 const client: Client | any = new Client({
     intents,
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
