@@ -9,7 +9,6 @@ export = {
             if (!server) {
                 const newServer = new Server({
                     serverId: guild.id,
-                    managerRoleId: guild.roles.highest.id,
                     verifiedUsers: [guild.ownerId],
                 });
                 newServer.save();

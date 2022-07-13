@@ -52,13 +52,13 @@ export = {
             const user = interaction.options.getUser('user');
             const server = await Server.findOne({
                 where: {
-                    id: interaction.guild?.id,
+                    serverId: interaction.guild?.id,
                 },
             });
             if (server!.verifiedUsers.includes(user!.id)) {
-                await interaction.reply(
+                await interaction.reply({content:
                     `${user!.username} is already verified`
-                );
+                , ephemeral: true});
                 return;
             }
             server?.verifiedUsers.push(user?.id as string);
@@ -75,11 +75,11 @@ export = {
             const user = interaction.options.getUser('user');
             const server = await Server.findOne({
                 where: {
-                    id: interaction.guild?.id,
+                    serverId: interaction.guild?.id,
                 },
             });
             if (!server!.verifiedUsers.includes(user!.id)) {
-                await interaction.reply(`${user!.username} is not verified`);
+                await interaction.reply({content: `${user!.username} is not verified`, ephemeral: true});
                 return;
             }
             server?.verifiedUsers.splice(
@@ -100,7 +100,7 @@ export = {
         ) {
             const server = await Server.findOne({
                 where: {
-                    id: interaction.guild?.id,
+                    serverId: interaction.guild?.id,
                 },
             });
             const verifiedUsers: string[] = server?.verifiedUsers as string[];
