@@ -69,7 +69,8 @@ export = {
                 }
             );
             const author: EmbedAuthorData = {
-                name: interaction.user.username,
+                //@ts-ignore
+                name: interaction.member?.nickname,
                 iconURL: interaction.user.avatarURL() as string,
             };
             Twitter.findOne(
