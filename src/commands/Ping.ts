@@ -21,8 +21,8 @@ export = {
                         //@ts-ignore
                         interaction.member?.nickname
                     )} has pinged their location to ${bold(
-                        //@ts-ignore
                         interaction.options.getMember('user')!
+                        //@ts-ignore
                             .nickname as unknown as string
                     )}\n\nYou are now allowed to use your map to locate ${
                         //@ts-ignore
