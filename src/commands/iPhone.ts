@@ -242,7 +242,7 @@ export = {
                     discordId: interaction.member?.id,
                 });
                 if (dbUser!.contacts!.length > 0) {
-                    interaction.reply({
+                    return interaction.reply({
                         content: 'You have no contacts!',
                         ephemeral: true,
                     });
