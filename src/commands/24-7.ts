@@ -1,5 +1,5 @@
-import type { CommandInteraction } from 'discord.js';
-import { bold, SlashCommandBuilder } from '@discordjs/builders';
+import type { CommandInteraction, MessageEmbed } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import TwentyFourSeven from '../components/embeds/TwentyFourSeven';
 
 export = {
@@ -92,16 +92,8 @@ export = {
         ),
 
     async execute(interaction: CommandInteraction) {
-        const location = interaction.options.getString('location');
-        const status = interaction.options.getString('status');
-        interaction.reply({
-            embeds: [
-                TwentyFourSeven.setDescription(
-                    `The 24/7 in ${bold(location as string)} is now ${bold(
-                        status as string
-                    )}!`
-                ),
-            ],
+        TwentyFourSeven(interaction).then((embed) => {
+            interaction.reply({ embeds: [embed as MessageEmbed] });
         });
     },
 };
