@@ -137,7 +137,7 @@ export = {
                     number: interaction.options.getString('number'),
                 });
                 if (sendTo) {
-                    sendTo.contacts.forEach((contact) => {
+                    sendTo.contacts!.forEach((contact) => {
                         if (contact.number === dbUser!.number) {
                             Text.setAuthor({
                                 name: `${contact.name}`,
@@ -199,7 +199,7 @@ export = {
                     name: interaction.options.getString('name') as string,
                     number: interaction.options.getString('number') as string,
                 };
-                dbUser!.contacts.push(contact);
+                dbUser!.contacts!.push(contact);
                 await dbUser!.save();
                 interaction.reply({
                     content: 'Contact added!',
@@ -215,14 +215,14 @@ export = {
                         ephemeral: true,
                     });
                 } else {
-                    const contact = dbUser!.contacts.find(
+                    const contact = dbUser!.contacts!.find(
                         (contact) =>
                             contact.number ===
                             (interaction.options.getString('number') as string)
                     );
                     if (contact) {
-                        dbUser!.contacts.splice(
-                            dbUser!.contacts.indexOf(contact),
+                        dbUser!.contacts!.splice(
+                            dbUser!.contacts!.indexOf(contact),
                             1
                         );
                         await dbUser!.save();
@@ -241,14 +241,14 @@ export = {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.member?.id,
                 });
-                if (dbUser!.contacts.length > 0) {
+                if (dbUser!.contacts!.length > 0) {
                     interaction.reply({
                         content: 'You have no contacts!',
                         ephemeral: true,
                     });
                 }
 
-                const contactList = dbUser!.contacts.map(
+                const contactList = dbUser!.contacts!.map(
                     (contact) => `${contact.name} - ${contact.number}`
                 );
                 interaction.reply({

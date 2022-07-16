@@ -50,7 +50,7 @@ export = {
                     })
                     .then(async (dbUser) => {
                         if (dbUser) {
-                            dbUser.items.push(
+                            dbUser.items!.push(
                                 interaction.options.getString('item') as string
                             );
                             await dbUser.save();
@@ -72,9 +72,9 @@ export = {
                             const item = interaction.options.getString(
                                 'item'
                             ) as string;
-                            const index = dbUser.items.indexOf(item);
+                            const index = dbUser.items!.indexOf(item);
                             if (index > -1) {
-                                dbUser.items.splice(index, 1);
+                                dbUser.items!.splice(index, 1);
                                 await dbUser.save();
                                 interaction.reply({
                                     content: `Removed ${item} from your inventory`,
@@ -98,7 +98,7 @@ export = {
                             interaction.reply({
                                 embeds: [
                                     Found.setDescription(
-                                        dbUser.items.join('\n')
+                                        dbUser.items!.join('\n')
                                     ),
                                 ],
                             });

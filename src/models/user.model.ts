@@ -1,15 +1,15 @@
 import { Schema, model, Document } from 'mongoose';
 interface IUser extends Document {
     discordId: string;
-    verifiedServers: string[];
-    number: string;
-    contacts: [{ name: string; number: string }];
-    items: string[];
-    twitter: {
-        username: string;
-        pfp: string;
+    verifiedServers?: string[];
+    number?: string
+    contacts?: [{ name?: string; number?: string }];
+    items?: string[];
+    twitter?: {
+        username?: string;
+        pfp?: string;
     };
-    email: string;
+    email?: string;
 }
 
 export default model<IUser>(
@@ -24,8 +24,8 @@ export default model<IUser>(
         contacts: {
             type: [
                 {
-                    name: { type: String, required: true },
-                    Number: { type: String, required: true },
+                    name: { type: String, required: false },
+                    Number: { type: String, required: false },
                 },
             ],
             required: false,
