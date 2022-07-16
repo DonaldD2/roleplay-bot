@@ -26,7 +26,6 @@ export = {
                     iconURL: `https://cdn.discordapp.com/avatars/${userID}/${avatar}.webp?size=256`,
                 })
                 .setTitle('Command List')
-                .setFooter({ text: 'Page 1/3' })
                 .setTimestamp();
 
             for (let i = 0; i < commands.length; i++) {
