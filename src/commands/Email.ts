@@ -84,6 +84,10 @@ export = {
                     'email'
                 ) as string;
                 await dbUser!.save();
+                interaction.reply({
+                    content: 'Email set!',
+                    ephemeral: true,
+                });
             }
         }
     },
