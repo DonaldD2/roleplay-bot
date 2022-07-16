@@ -256,8 +256,7 @@ export = {
                     ephemeral: true,
                 });
             } else if (
-                interaction.options.getSubcommand() === 'get' &&
-                interaction.options.getSubcommand() === 'number'
+                interaction.options.getSubcommand() === 'get'
             ) {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.member?.id,
