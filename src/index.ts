@@ -5,7 +5,7 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { connect } from 'mongoose';
 import { config } from 'dotenv';
-config({ path: './env' });
+config({ path: __dirname + './env' });
 
 connect(`${process.env.DB_URL}`).then(() => {
     consola.success('Connected to Database!');
