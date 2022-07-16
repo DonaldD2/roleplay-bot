@@ -307,7 +307,7 @@ export = {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.member?.id,
                 });
-                if (dbUser!.contacts!.length = 0) {
+                if (dbUser!.contacts!.length < 1) {
                     return interaction.reply({
                         content: 'You have no contacts!',
                         ephemeral: true,
