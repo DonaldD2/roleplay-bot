@@ -64,18 +64,26 @@ export = {
                                 content: 'Sent!',
                                 ephemeral: true,
                             });
+                        })
+                        .then(() => {
+                            if (
+                                interaction.options
+                                    .getString('content')
+                                    ?.includes('<@')
+                            ) {
+                                interaction.options
+                                    .getString('content')
+                                    ?.split(' ')
+                                    .forEach(async (user) => {
+                                        /<@!?(\d+)>/.test(user)
+                                            ? interaction.channel?.send(
+                                                  `${user}`
+                                              )
+                                            : null;
+                                    });
+                            }
                         });
                 });
-                if (interaction.options.getString('content')?.includes('<@')) {
-                    interaction.options
-                        .getString('content')
-                        ?.split(' ')
-                        .forEach(async (user) => {
-                            /<@!?(\d+)>/.test(user)
-                                ? interaction.channel?.send(`${user}`)
-                                : null;
-                        });
-                }
             } else if (interaction.options.getSubcommand() === 'set-profile') {
                 const username = interaction.options.getString(
                     'username'
