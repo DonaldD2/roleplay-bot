@@ -315,7 +315,7 @@ export = {
                 }
 
                 const contactList = dbUser!.contacts!.map(
-                    (contact) => `${contact.name} - ${contact.number}`
+                    (contact) =>{ if(contact.number != undefined) `${contact.name} - ${contact.number}`}
                 );
                 interaction.reply({
                     content: `Your contacts are: ${contactList.join('\n')}`,
