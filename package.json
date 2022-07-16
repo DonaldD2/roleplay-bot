@@ -33,6 +33,7 @@
         "consola": "^2.15.3",
         "discord-api-types": "^0.34.0",
         "discord.js": "^13.8.0",
+        "dotenv": "^16.0.1",
         "mongoose": "^6.4.3",
         "random-mobile-numbers": "^1.0.1",
         "yarn": "^1.22.19"

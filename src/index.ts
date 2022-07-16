@@ -4,9 +4,10 @@ import consola from 'consola';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { connect } from 'mongoose';
-import env from './env';
+import { config } from 'dotenv';
+config({ path: './env' });
 
-connect(`${env.DB_URL}`).then(() => {
+connect(`${process.env.DB_URL}`).then(() => {
     consola.success('Connected to Database!');
 });
 
@@ -65,13 +66,16 @@ export const commands = fs
     .filter((file) => file.endsWith('.js'))
     .map((file) => require(`./commands/${file}`).data.toJSON());
 
-const rest = new REST({ version: '9' }).setToken(env.TOKEN!);
+const rest = new REST({ version: '9' }).setToken(process.env.TOKEN as string);
 
 (async () => {
     try {
-        await rest.put(Routes.applicationCommands(env.CLIENTID), {
-            body: commands,
-        });
+        await rest.put(
+            Routes.applicationCommands(process.env.CLIENTID as string),
+            {
+                body: commands,
+            }
+        );
 
         consola.success('Successfully registered application commands.');
     } catch (error) {
@@ -79,4 +83,4 @@ const rest = new REST({ version: '9' }).setToken(env.TOKEN!);
     }
 })();
 
-client.login(env.TOKEN);
+client.login(process.env.TOKEN);
