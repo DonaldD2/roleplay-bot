@@ -2,6 +2,7 @@ import type { CommandInteraction } from 'discord.js';
 import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { Cuffed, Cuffing } from '../components/embeds/Cuff';
 import { setTimeout } from 'node:timers/promises';
+import checkStringForUser from '../components/functions/checkStringForUser';
 
 export = {
     data: new SlashCommandBuilder()
@@ -22,15 +23,16 @@ export = {
                 embeds: [
                     Cuffed.setDescription(
                         `${bold(
-                            interaction.member as unknown as string
+                            interaction.member?.nickname as unknown as string
                         )} cuffed ${bold(
                             interaction.options.getMember(
                                 'user'
-                            ) as unknown as string
+                            )?.nickname as unknown as string
                         )}!`
                     ),
                 ],
             });
+            checkStringForUser(interaction, interaction.options.getMember('user') as unknown as string);
         }
     },
 };

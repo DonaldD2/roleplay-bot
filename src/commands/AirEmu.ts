@@ -1,5 +1,5 @@
 import type { CommandInteraction } from 'discord.js';
-import { bold, SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import AirEmu from '../components/embeds/AirEmu';
 
 export = {
@@ -49,19 +49,9 @@ export = {
                 )
         ),
     async execute(interaction: CommandInteraction) {
-        const location = interaction.options.getString('location');
-        const status = interaction.options.getString('status');
-        const number = interaction.options.getNumber('flight-number');
-
         interaction.reply({
             embeds: [
-                AirEmu.setDescription(
-                    `AirEmu Flight Number ${bold(
-                        number as unknown as string
-                    )} in ${bold(location as string)} is now ${bold(
-                        status as string
-                    )}!`
-                ),
+                AirEmu(interaction!)
             ],
         });
     },

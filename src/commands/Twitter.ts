@@ -2,6 +2,7 @@ import type { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import Tweet from '../components/embeds/Tweet';
 import userModel from '../models/user.model';
+import checkStringForUser from '../components/functions/checkStringForUser';
 
 export = {
     data: new SlashCommandBuilder()
@@ -66,22 +67,7 @@ export = {
                             });
                         })
                         .then(() => {
-                            if (
-                                interaction.options
-                                    .getString('content')
-                                    ?.includes('<@')
-                            ) {
-                                interaction.options
-                                    .getString('content')
-                                    ?.split(' ')
-                                    .forEach(async (user) => {
-                                        /<@!?(\d+)>/.test(user)
-                                            ? interaction.channel?.send(
-                                                  `${user}`
-                                              )
-                                            : null;
-                                    });
-                            }
+                            checkStringForUser(interaction, interaction.options.getString('content') as string);
                         });
                 });
             } else if (interaction.options.getSubcommand() === 'set-profile') {

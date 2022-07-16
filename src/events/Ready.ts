@@ -1,6 +1,6 @@
 import consola from 'consola';
 import type { Client } from 'discord.js';
-import userModel from '../models/user.model';
+import checkDB from '../components/functions/checkDB';
 
 export = {
     name: 'ready',
@@ -14,36 +14,7 @@ export = {
         client.user?.setActivity(`Over ${memberCount} Members`, {
             type: 'WATCHING',
         });
-        client.guilds.cache.forEach((guild) => {
-            guild.members.cache.forEach(async (member) => {
-                const dbUser = await userModel.findOne({
-                    discordId: member.id,
-                });
-                if (!dbUser) {
-                    userModel
-                        .create({
-                            discordId: member.id,
-                            verifiedServers: [],
-                            number: '',
-                            contacts: [
-                                {
-                                    name: '',
-                                    number: '',
-                                },
-                            ],
-                            items: [],
-                            twitter: {
-                                username: '',
-                                pfp: '',
-                            },
-                            email: '',
-                        })
-                        .catch((err) => {
-                            consola.error(err);
-                        });
-                }
-            });
-        });
+        checkDB(client);
         consola.success(`Ensured all users are in the database`);
     },
 };

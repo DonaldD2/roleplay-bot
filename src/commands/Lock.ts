@@ -14,7 +14,7 @@ export = {
                     embeds: [
                         Lock.setDescription(
                             bold(`${interaction.member?.nickname}`) +
-                                'has locked their vehicle!'
+                                ' has locked their vehicle!'
                         ),
                     ],
                 });

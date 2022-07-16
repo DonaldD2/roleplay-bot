@@ -18,12 +18,35 @@ export = {
                 .setDescription('iPhone action commands')
                 .addSubcommand((subcommand) =>
                     subcommand
-                        .setName('text')
+                        .setName('text-number')
                         .setDescription('Text a number')
                         .addStringOption((option) =>
                             option
                                 .setName('number')
                                 .setDescription('The number you want to text')
+                                .setRequired(true)
+                        )
+                        .addStringOption((option) =>
+                            option
+                                .setName('text')
+                                .setDescription('The text you want to send')
+                                .setRequired(true)
+                        )
+                        .addAttachmentOption((option) =>
+                            option
+                                .setName('image')
+                                .setDescription('An image you want to send')
+                                .setRequired(false)
+                        )
+                )
+                .addSubcommand((subcommand) =>
+                    subcommand
+                        .setName('text-contact')
+                        .setDescription('Text a contact')
+                        .addStringOption((option) =>
+                            option
+                                .setName('comtact')
+                                .setDescription('The contact you want to text')
                                 .setRequired(true)
                         )
                         .addStringOption((option) =>
@@ -113,7 +136,7 @@ export = {
 
     async execute(interaction: CommandInteraction) {
         if (interaction.inCachedGuild()) {
-            if (interaction.options.getSubcommand() === 'text') {
+            if (interaction.options.getSubcommand() === 'text-number') {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.member?.id,
                 });
@@ -135,6 +158,49 @@ export = {
                 }
                 const sendTo = await userModel.findOne({
                     number: interaction.options.getString('number'),
+                });
+                if (sendTo) {
+                    sendTo.contacts!.forEach((contact) => {
+                        if (contact.number === dbUser!.number) {
+                            Text.setAuthor({
+                                name: `${contact.name}`,
+                            });
+                        }
+                    });
+                    interaction.client.users.cache
+                        .get(sendTo.discordId)
+                        ?.send({ embeds: [Text] })
+                        .then(async () => {
+                            interaction.reply({
+                                content: 'Text Sent!',
+                                ephemeral: true,
+                            });
+                        });
+                } else {
+                    interaction.reply({ content: 'Number not found' });
+                }
+            } else if (interaction.options.getSubcommand() === 'text-contact') {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+                Text.setDescription(`${interaction.options.getString('text')}`);
+                Text.setAuthor({
+                    name: 'Unknown Number',
+                });
+                if (dbUser!.number) {
+                    Text.setAuthor({
+                        name: `${dbUser!.number}`,
+                    });
+                }
+                if (interaction.options.getAttachment('image')) {
+                    Text.setImage(
+                        `${
+                            interaction.options.getAttachment('image')?.proxyURL
+                        }`
+                    );
+                }
+                const sendTo = await userModel.findOne({
+                    number: interaction.options.getString('contact'),
                 });
                 if (sendTo) {
                     sendTo.contacts!.forEach((contact) => {
@@ -241,7 +307,7 @@ export = {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.member?.id,
                 });
-                if (dbUser!.contacts!.length > 0) {
+                if (dbUser!.contacts!.length = 0) {
                     return interaction.reply({
                         content: 'You have no contacts!',
                         ephemeral: true,

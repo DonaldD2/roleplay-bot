@@ -13,7 +13,7 @@ export = {
                 embeds: [
                     Unlock.setDescription(
                         bold(`${interaction.member?.nickname}`) +
-                            'has unlocked their vehicle!'
+                            ' has unlocked their vehicle!'
                     ),
                 ],
             });
