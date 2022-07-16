@@ -14,22 +14,21 @@ export = {
                 .setRequired(true)
         ),
     async execute(interaction: CommandInteraction) {
-        await interaction.reply({
-            embeds: [
-                Ping.setDescription(
-                    `${bold(
-                        //@ts-ignore
-                        interaction.member?.nickname
-                    )} has pinged their location to ${bold(
-                        interaction.options.getMember('user')!
-                        //@ts-ignore
-                            .nickname as unknown as string
-                    )}\n\nYou are now allowed to use your map to locate ${
-                        //@ts-ignore
-                        interaction.member?.nickname
-                    }`
-                ),
-            ],
-        });
+        if (interaction.inCachedGuild()) {
+            await interaction.reply({
+                embeds: [
+                    Ping.setDescription(
+                        `${bold(
+                            interaction.member?.nickname as string
+                        )} has pinged their location to ${bold(
+                            interaction.options.getMember('user')!
+                                .nickname as unknown as string
+                        )}\n\nYou are now allowed to use your map to locate ${
+                            interaction.member?.nickname
+                        }`
+                    ),
+                ],
+            });
+        }
     },
 };

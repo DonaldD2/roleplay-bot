@@ -49,13 +49,11 @@ export = {
                 )
         ),
     async execute(interaction: CommandInteraction) {
-        const location: string | null =
-            interaction.options.getString('location');
-        const status: string | null = interaction.options.getString('status');
-        const number: number | null =
-            interaction.options.getNumber('flight-number');
+        const location = interaction.options.getString('location');
+        const status = interaction.options.getString('status');
+        const number = interaction.options.getNumber('flight-number');
 
-        await interaction.reply({
+        interaction.reply({
             embeds: [
                 AirEmu.setDescription(
                     `AirEmu Flight Number ${bold(

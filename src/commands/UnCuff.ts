@@ -15,20 +15,21 @@ export = {
                 .setRequired(true)
         ),
     async execute(interaction: CommandInteraction) {
-        await interaction.reply({ embeds: [unCuffing] });
-        await setTimeout(3000);
-        await interaction.editReply({
-            embeds: [
-                unCuffed.setDescription(
-                    `${bold(
-                        interaction.member as unknown as string
-                    )} uncuffed ${bold(
-                        interaction.options.getMember(
-                            'user'
-                        ) as unknown as string
-                    )}!`
-                ),
-            ],
-        });
+        if (interaction.inCachedGuild()) {
+            await interaction.reply({ embeds: [unCuffing] });
+            await setTimeout(3000);
+            await interaction.editReply({
+                embeds: [
+                    unCuffed.setDescription(
+                        `${bold(
+                            interaction.member?.nickname as unknown as string
+                        )} uncuffed ${bold(
+                            interaction.options.getMember('user')
+                                ?.nickname as unknown as string
+                        )}!`
+                    ),
+                ],
+            });
+        }
     },
 };

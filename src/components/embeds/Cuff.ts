@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 
-export const Cuffing: MessageEmbed = new MessageEmbed()
+export const Cuffing = new MessageEmbed()
     .setTimestamp()
     .setDescription(`Applying cuffs...`);
 
-export const Cuffed: MessageEmbed = new MessageEmbed().setTimestamp();
+export const Cuffed = new MessageEmbed().setTimestamp();

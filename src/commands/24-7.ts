@@ -92,10 +92,9 @@ export = {
         ),
 
     async execute(interaction: CommandInteraction) {
-        const location: string | null =
-            interaction.options.getString('location');
-        const status: string | null = interaction.options.getString('status');
-        await interaction.reply({
+        const location = interaction.options.getString('location');
+        const status = interaction.options.getString('status');
+        interaction.reply({
             embeds: [
                 TwentyFourSeven.setDescription(
                     `The 24/7 in ${bold(location as string)} is now ${bold(

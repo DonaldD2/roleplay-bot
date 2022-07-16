@@ -1,17 +1,24 @@
 import { Guild } from 'discord.js';
-import Server from '../models/Server';
+import UserModel from '../models/user.model';
 
 export = {
     name: 'guildCreate',
-    execute(guild: Guild) {
-        Server.findOne({ serverId: guild.id }, null, (err, server) => {
-            if (err) console.log(err);
-            if (!server) {
-                const newServer = new Server({
-                    serverId: guild.id,
-                    verifiedUsers: [guild.ownerId],
+    async execute(guild: Guild) {
+        guild.members.cache.forEach((member) => {
+            const dbUser = UserModel.findOne({ discordId: member.id });
+            if (!dbUser) {
+                UserModel.create({
+                    discordId: member.id,
+                    verifiedServers: [],
+                    number: '',
+                    contacts: [],
+                    items: [],
+                    twitter: {
+                        username: '',
+                        pfp: '',
+                    },
+                    email: '',
                 });
-                newServer.save();
             }
         });
     },

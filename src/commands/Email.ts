@@ -1,7 +1,8 @@
 import type { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import Email from '../models/Email';
-import Gmail from '../components/embeds/Email';
+import userModel from '../models/user.model';
+
+import Email from '../components/embeds/Email';
 
 export = {
     data: new SlashCommandBuilder()
@@ -42,98 +43,47 @@ export = {
                         .setRequired(true)
                 )
         ),
-
     async execute(interaction: CommandInteraction) {
-        if (interaction.options.getSubcommand() === 'send') {
-            Email.findOne(
-                { email: `${interaction.options.getString('to')}` },
-                'discordId email',
-                async (err, email) => {
-                    if (err) console.log(err);
-                    Gmail.setDescription(
-                        `${interaction.options.getString('content')}`
+        if (interaction.inCachedGuild()) {
+            if (interaction.options.getSubcommand() === 'send') {
+                if (interaction.options.getAttachment('image')) {
+                    Email.setImage(
+                        `${
+                            interaction.options.getAttachment('image')?.proxyURL
+                        }`
                     );
-                    Email.findOne(
-                        { discordId: interaction.user.id },
-                        null,
-                        async (err, user) => {
-                            if (err) console.log(err);
-                            if ('email' in user!) {
-                            } else {
-                                await interaction.reply({
-                                    content: 'You have no email set',
-                                    ephemeral: true,
-                                });
-                                return;
-                            }
-                        }
-                    );
+                }
 
-                    Email.findOne(
-                        //@ts-ignore
-                        { discordId: `${interaction.member?.id}` },
-                        'email',
-                        async (err, email) => {
-                            if (err) console.log(err);
-                            Gmail.setAuthor({ name: `${email!.email}` });
-                        }
-                    );
-                    if (interaction.options.getAttachment('image')) {
-                        Gmail.setImage(
-                            `${
-                                interaction.options.getAttachment('image')
-                                    ?.proxyURL
-                            }`
-                        );
-                    }
-                    await interaction.client.users.cache
-                        .get(email!.discordId)
-                        ?.send({
-                            embeds: [
-                                Gmail.setDescription(
-                                    `${interaction.options.getString(
-                                        'content'
-                                    )}`
-                                ),
-                            ],
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+
+                if (dbUser!.email) {
+                    const sendTo = await userModel.findOne({
+                        email: interaction.options.getString('to'),
+                    });
+                    interaction.client.users.cache
+                        .get(sendTo!.discordId)
+                        ?.send({ embeds: [Email] })
+                        .then(async () => {
+                            interaction.reply({
+                                content: 'Email Sent!',
+                                ephemeral: true,
+                            });
                         });
                     await interaction.reply({
                         content: 'Sent!',
                         ephemeral: true,
                     });
                 }
-            );
-        } else {
-            const validateEmail = (email: string): boolean => {
-                var re = /\S+@\S+\.\S+/;
-                return re.test(email);
-            };
-            if (
-                validateEmail(interaction.options.getString('email') as string)
-            ) {
-                Email.findOneAndRemove(
-                    { discordId: `${interaction.member?.user.id}` },
-                    null,
-                    async (err) => {
-                        if (err) console.log(err);
-                        const profile = new Email({
-                            discordId: `${interaction.member?.user.id}`,
-                            email: interaction.options.getString('email'),
-                        });
-                        profile.save((err) => {
-                            if (err) console.log(err);
-                        });
-                        await interaction.reply({
-                            content: 'Email Set!',
-                            ephemeral: true,
-                        });
-                    }
-                );
-            } else {
-                await interaction.reply({
-                    content: 'Invalid Email',
-                    ephemeral: true,
+            } else if (interaction.options.getSubcommand() === 'set-email') {
+                const dbUser = await userModel.findOne({
+                    serverId: interaction.guildId,
                 });
+                dbUser!.email = interaction.options.getString(
+                    'email'
+                ) as string;
+                await dbUser!.save();
             }
         }
     },

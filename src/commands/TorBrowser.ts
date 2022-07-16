@@ -20,27 +20,29 @@ export = {
                 .setRequired(false)
         ),
     async execute(interaction: CommandInteraction) {
-        if (interaction.options.getAttachment('image'))
-            Tor.setImage(
-                `${interaction.options.getAttachment('image')?.proxyURL}`
-            );
-        await interaction.channel?.send({
-            embeds: [
-                Tor.setDescription(
-                    `${interaction.options.getString('content')}`
-                ),
-            ],
-        });
-        if (interaction.options.getString('content')?.includes('<@')) {
-            interaction.options
-                .getString('content')
-                ?.split(' ')
-                .forEach((val) => {
-                    /<@!?(\d+)>/.test(val)
-                        ? interaction.channel?.send(`${val}`)
-                        : null;
-                });
+        if (interaction.inCachedGuild()) {
+            if (interaction.options.getAttachment('image'))
+                Tor.setImage(
+                    `${interaction.options.getAttachment('image')?.proxyURL}`
+                );
+            await interaction.channel?.send({
+                embeds: [
+                    Tor.setDescription(
+                        `${interaction.options.getString('content')}`
+                    ),
+                ],
+            });
+            if (interaction.options.getString('content')?.includes('<@')) {
+                interaction.options
+                    .getString('content')
+                    ?.split(' ')
+                    .forEach((val) => {
+                        /<@!?(\d+)>/.test(val)
+                            ? interaction.channel?.send(`${val}`)
+                            : null;
+                    });
+            }
+            await interaction.reply({ content: 'Sent!', ephemeral: true });
         }
-        await interaction.reply({ content: 'Sent!', ephemeral: true });
     },
 };

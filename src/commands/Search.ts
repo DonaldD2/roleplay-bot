@@ -1,8 +1,7 @@
 import type { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder, bold } from '@discordjs/builders';
 import Search, { Found } from '../components/embeds/Search';
-import { setTimeout } from 'timers/promises';
-import Inventory from '../models/Inventory';
+import Server from '../models/user.model';
 
 export = {
     data: new SlashCommandBuilder()
@@ -16,34 +15,23 @@ export = {
                 .setRequired(true)
         ),
     async execute(interaction: CommandInteraction) {
-        //@ts-ignore
-        Search.description += bold(interaction.options.getMember('user'));
-        await interaction.reply({ embeds: [Search] });
-        await setTimeout(5000);
-        Inventory.findOne(
-            {
-                //@ts-ignore
-                discordId: `${interaction.user.id}`,
-            },
-            'items',
-            async (err, inventory) => {
-                if (err) console.log(err);
-                if (inventory) {
-                    if('items' in inventory) {
-                    if (inventory!.items.length > 0) {
-                        inventory?.items.forEach((item) => {
-                            Found.description += `${item},\n`;
-                        });
-                        await interaction.editReply({ embeds: [Found] });
-                    } else {
-                        Found.description = 'No items Found';
-                        await interaction.editReply({ embeds: [Found] });
-                    }
-                }
-                }
+        if (interaction.inCachedGuild()) {
+            Search.description += bold(
+                interaction.options.getMember('user')!.nickname as string
+            );
+            await interaction.reply({ embeds: [Search] });
+            const dbUser = await Server.findOne({
+                discordId: interaction.member.id,
+            });
+            if (dbUser!.items.length != 0) {
+                dbUser!.items.forEach((item) => {
+                    Found.description += `${item}\n`;
+                });
+                await interaction.editReply({ embeds: [Found] });
+            } else {
+                Found.description += `No Items Found`;
+                await interaction.editReply({ embeds: [Found] });
             }
-        );
-        Search.description = 'Searching ';
-        Found.description = '';
+        }
     },
 };

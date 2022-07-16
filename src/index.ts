@@ -3,11 +3,10 @@ import { Client, Collection, Intents, Interaction } from 'discord.js';
 import consola from 'consola';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
-import { connect, connection } from 'mongoose';
+import { connect } from 'mongoose';
 import env from './env';
 
-connect(`${env.DB_URL}`);
-connection.once('open', () => {
+connect(`${env.DB_URL}`).then(() => {
     consola.success('Connected to Database!');
 });
 
@@ -18,7 +17,7 @@ const client: Client | any = new Client({
 });
 
 client.commands = new Collection();
-const commandFolders: unknown[] = fs.readdirSync('dist/commands');
+const commandFolders = fs.readdirSync('dist/commands');
 
 for (const _folder of commandFolders) {
     const commandFiles = fs
@@ -32,7 +31,7 @@ for (const _folder of commandFolders) {
 
 client.on('interactionCreate', async (interaction: Interaction) => {
     if (!interaction.isCommand()) return;
-    const command: any = client.commands.get(interaction.commandName);
+    const command = client.commands.get(interaction.commandName);
     if (!command) return;
     try {
         await command.execute(interaction);
@@ -47,25 +46,26 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 });
 consola.success('Command Handler Loaded!');
 
-const eventFiles: any = fs
+const eventFiles = fs
     .readdirSync('./dist/events')
     .filter((file) => file.endsWith('.js'));
 
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
-        client.once(event.name, (...args: any) => event.execute(...args));
+        client.once(event.name, (...args: unknown[]) => event.execute(...args));
     } else {
-        client.on(event.name, (...args: any) => event.execute(...args));
+        client.on(event.name, (...args: unknown[]) => event.execute(...args));
     }
 }
 consola.success('Event Handler Loaded!');
 
-export const commands: any = fs
+export const commands = fs
     .readdirSync(`dist/commands`)
     .filter((file) => file.endsWith('.js'))
     .map((file) => require(`./commands/${file}`).data.toJSON());
-const rest: REST = new REST({ version: '9' }).setToken(env.TOKEN!);
+
+const rest = new REST({ version: '9' }).setToken(env.TOKEN!);
 
 (async () => {
     try {

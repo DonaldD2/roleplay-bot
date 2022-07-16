@@ -21,13 +21,15 @@ export = {
                 )
         ),
     async execute(interaction: CommandInteraction) {
-        const status: string | null = interaction.options.getString('status');
-        await interaction.reply({
-            embeds: [
-                BugStars.setDescription(
-                    `BugStars is now ${bold(status as string)}!`
-                ),
-            ],
-        });
+        if (interaction.inCachedGuild()) {
+            const status = interaction.options.getString('status');
+            return interaction.reply({
+                embeds: [
+                    BugStars.setDescription(
+                        `BugStars is now ${bold(status as string)}`
+                    ),
+                ],
+            });
+        }
     },
 };

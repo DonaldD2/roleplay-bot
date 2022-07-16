@@ -66,11 +66,10 @@ export = {
                 )
         ),
     async execute(interaction: CommandInteraction) {
-        const location: string | null =
-            interaction.options.getString('location');
-        const status: string | null = interaction.options.getString('status');
+        const location = interaction.options.getString('location');
+        const status = interaction.options.getString('status');
 
-        await interaction.reply({
+        interaction.reply({
             embeds: [
                 AmmuNation.setDescription(
                     `The AmmuNation in ${bold(

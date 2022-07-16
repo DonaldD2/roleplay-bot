@@ -21,7 +21,7 @@ export = {
                     { name: 'Landing', value: 'Landing' }
                 )
         )
-        .addNumberOption((option) =>
+        .addStringOption((option) =>
             option
                 .setName('flight-number')
                 .setDescription('The flight number of your plane')
@@ -49,22 +49,22 @@ export = {
                 )
         ),
     async execute(interaction: CommandInteraction) {
-        const location: string | null =
-            interaction.options.getString('location');
-        const status: string | null = interaction.options.getString('status');
-        const number: number | null =
-            interaction.options.getNumber('flight-number');
+        if (interaction.inCachedGuild()) {
+            const location = interaction.options.getString('location');
+            const status = interaction.options.getString('status');
+            const number = interaction.options.getString('flight-number');
 
-        await interaction.reply({
-            embeds: [
-                FlyUS.setDescription(
-                    `FlyUS Flight Number ${bold(
-                        number as unknown as string
-                    )} in ${bold(location as string)} is now ${bold(
-                        status as string
-                    )}!`
-                ),
-            ],
-        });
+            interaction.reply({
+                embeds: [
+                    FlyUS.setDescription(
+                        `FlyUS Flight Number ${bold(
+                            number as string
+                        )} in ${bold(location as string)} is now ${bold(
+                            status as string
+                        )}!`
+                    ),
+                ],
+            });
+        }
     },
 };

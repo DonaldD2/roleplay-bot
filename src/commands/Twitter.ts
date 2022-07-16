@@ -1,8 +1,7 @@
 import type { CommandInteraction, EmbedAuthorData } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import Tweet from '../components/embeds/Tweet';
-import Server from '../models/Server';
-import Twitter from '../models/Twitter';
+import userModel from '../models/user.model';
 
 export = {
     data: new SlashCommandBuilder()
@@ -45,146 +44,107 @@ export = {
         ),
 
     async execute(interaction: CommandInteraction) {
-        if (interaction.options.getSubcommand() === 'post') {
-            if (interaction.options.getAttachment('image'))
-                Tweet.setImage(
-                    `${interaction.options.getAttachment('image')?.proxyURL}`
-                );
-            Server.findOne(
-                { serverId: interaction.guild?.id },
-                'verifiedUsers',
-                (err, server) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        server?.verifiedUsers.forEach(async (user) => {
-                            //@ts-ignore
-                            if (user === interaction.member?.id) {
-                                Tweet.setTitle(
-                                    '<:verified:869045206857711657> TWOTTER'
-                                );
-                            }
-                        });
-                    }
+        if (interaction.inCachedGuild()) {
+            if (interaction.options.getSubcommand() === 'post') {
+                if (interaction.options.getAttachment('image')) {
+                    Tweet.setImage(
+                        `${
+                            interaction.options.getAttachment('image')?.proxyURL
+                        }`
+                    );
                 }
-            );
-            const author: EmbedAuthorData = {
-                //@ts-ignore
-                name: interaction.member?.nickname,
-                iconURL: interaction.user.avatarURL() as string,
-            };
-            Twitter.findOne(
-                { discordId: interaction.user.id },
-                'username pfp',
-                async (err, server) => {
-                    if (err) {
-                        console.log(err);
-                    } else if (!server) {
-                        const newTwitter = new Twitter({
-                            discordId: interaction.user.id,
-                            //@ts-ignore
-                            username: interaction.member?.nickname,
-                            pfp: interaction.user.avatarURL(),
-                        });
-                        newTwitter.save();
-                    } else {
-                        if ('pfp' in server) {
-                            author.iconURL = server.pfp;
-                        }
-                        if ('username' in server) {
-                            author.name = server.username;
-                        }
-                        await interaction.channel
-                            ?.send({
-                                embeds: [
-                                    Tweet.setDescription(
-                                        `${interaction.options.getString(
-                                            'content'
-                                        )}`
-                                    ).setAuthor(author),
-                                ],
-                            })
-                            .then(async (msg) => {
-                                await interaction.reply({
-                                    content: 'Sent!',
-                                    ephemeral: true,
-                                });
-                                msg.react('<:like:995422257600016414>');
-                                // msg.react('<:retweet:995421485063745706>');
-                                Tweet.setImage('');
-                            })
-                            .then(async () => {
-                                if (
-                                    interaction.options
-                                        .getString('content')
-                                        ?.includes('<@')
-                                ) {
-                                    interaction.options
-                                        .getString('content')
-                                        ?.split(' ')
-                                        .forEach(async (val) => {
-                                            /<@!?(\d+)>/.test(val)
-                                                ? await interaction.channel?.send(
-                                                      `${val}`
-                                                  )
-                                                : null;
-                                        });
-                                }
-                            });
-                    }
+
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+
+                if (
+                    dbUser?.verifiedServers.includes(
+                        interaction.guildId as string
+                    )
+                ) {
+                    Tweet.setTitle('<:verified:869045206857711657> TWOTTER');
                 }
-            );
-        } else if (interaction.options.getSubcommand() === 'set-profile') {
-            const username = interaction.options.getString('username');
-            const pfp = interaction.options.getAttachment('image');
-            Twitter.findOne(
-                { discordId: interaction.user.id },
-                'username pfp',
-                (err, server) => {
-                    if (err) {
-                        console.log(err);
-                    } else if (!server) {
-                        const newTwitter = new Twitter({
-                            discordId: interaction.user.id,
-                            username:
-                                username ||
-                                //@ts-ignore
-                                interaction.member?.nickname ||
-                                interaction.user.username,
-                            pfp: pfp?.proxyURL || interaction.user.avatarURL(),
-                        });
-                        newTwitter.save();
-                    } else {
-                        server.username =
-                            //@ts-ignore
-                            username || interaction.member?.nickname;
-                        server.pfp =
-                            pfp?.proxyURL ||
-                            (interaction.user.avatarURL() as string);
-                        server?.save();
-                    }
+                const author: EmbedAuthorData = {
+                    name: interaction.member?.user.username,
+                    iconURL: interaction.user.avatarURL() as string,
+                };
+                if (interaction.member?.nickname) {
+                    author.name = interaction.member?.nickname;
                 }
-            );
-            if (!username && !pfp) {
-                await interaction.reply({
-                    embeds: [
-                        {
-                            title: 'Profile reset',
-                            description: `Your profile has been reset `,
-                        },
-                    ],
+                if (dbUser!.twitter.username) {
+                    author.name = dbUser!.twitter.username;
+                }
+                if (dbUser!.twitter.pfp) {
+                    author.iconURL = dbUser!.twitter.pfp;
+                }
+                interaction.channel
+                    ?.send({
+                        embeds: [
+                            Tweet.setDescription(
+                                `${interaction.options.getString('content')}`
+                            ).setAuthor(author),
+                        ],
+                    })
+                    .then(async (msg) => {
+                        msg.react('<:like:995422257600016414>');
+                        // msg.react('<:retweet:995421485063745706>');
+                    });
+                interaction.reply({
+                    content: 'Sent!',
                     ephemeral: true,
                 });
-            } else {
-                await interaction.reply({
-                    embeds: [
-                        {
-                            title: 'Profile Set',
-                            description: `Your profile has been set to ${username}`,
-                        },
-                    ],
-                    ephemeral: true,
+                if (interaction.options.getString('content')?.includes('<@')) {
+                    interaction.options
+                        .getString('content')
+                        ?.split(' ')
+                        .forEach(async (val) => {
+                            /<@!?(\d+)>/.test(val)
+                                ? await interaction.channel?.send(`${val}`)
+                                : null;
+                        });
+                }
+            } else if (interaction.options.getSubcommand() === 'set-profile') {
+                const username = interaction.options.getString(
+                    'username'
+                ) as string;
+                const pfp =
+                    interaction.options.getAttachment('image')?.proxyURL;
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
                 });
+                if (username) {
+                    dbUser!.twitter.username = username;
+                }
+                if (pfp) {
+                    dbUser!.twitter.pfp = pfp;
+                }
+                await dbUser!.save();
+                if (!username && !pfp) {
+                    dbUser!.twitter = {
+                        username: '',
+                        pfp: '',
+                    };
+                    await interaction.reply({
+                        embeds: [
+                            {
+                                title: 'Profile reset',
+                                description: `Your profile has been reset `,
+                            },
+                        ],
+                        ephemeral: true,
+                    });
+                } else {
+                    await interaction.reply({
+                        embeds: [
+                            {
+                                title: 'Profile Set',
+                                description: `Your profile has been set to ${username}`,
+                            },
+                        ],
+                        ephemeral: true,
+                    });
+                }
             }
         }
     },

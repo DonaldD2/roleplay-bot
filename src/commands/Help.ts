@@ -14,58 +14,64 @@ export = {
                 .setRequired(false)
         ),
     async execute(interaction: CommandInteraction) {
-        let avatar: string | null | undefined = interaction.member?.user.avatar;
-        //@ts-ignore
-        let userID: string | null = interaction.member?.id;
-        //@ts-ignore
-        let author: string | null = interaction.member?.user.tag;
+        if (interaction.inCachedGuild()) {
+            let avatar = interaction.member?.user.avatar;
+            let userID = interaction.member?.id;
+            let author = interaction.member?.user.tag;
 
-        const main: MessageEmbed = new MessageEmbed()
-            .setColor('#004cff')
-            .setAuthor({
-                name: `${author}`,
-                iconURL: `https://cdn.discordapp.com/avatars/${userID}/${avatar}.webp?size=256`,
-            })
-            .setTitle('Command List')
-            .setFooter({ text: 'Page 1/3' })
-            .setTimestamp();
-
-        for (let i = 0; i < commands.length; i++) {
-            main.addField(commands[i].name, commands[i].description, true);
-        }
-        if (interaction.options.getString('command')) {
-            const cmdsearch = interaction.options.getString('command');
-            const command = commands.find((c: any) => cmdsearch == c.name);
-            const Search: MessageEmbed = new MessageEmbed()
+            const main = new MessageEmbed()
                 .setColor('#004cff')
                 .setAuthor({
                     name: `${author}`,
                     iconURL: `https://cdn.discordapp.com/avatars/${userID}/${avatar}.webp?size=256`,
                 })
-                .addField(command.name, command.description, true)
-                .setFooter({ text: 'Command Search' })
+                .setTitle('Command List')
+                .setFooter({ text: 'Page 1/3' })
                 .setTimestamp();
 
-            const Error: MessageEmbed = new MessageEmbed()
-                .setColor('#ff0000')
-                .setAuthor({
-                    name: `${author}`,
-                    iconURL: `https://cdn.discordapp.com/avatars/${userID}/${avatar}.webp?size=256`,
-                })
-                .setTitle(`Command name ${cmdsearch} not found.`)
-                .setFooter({ text: 'Command Search' })
-                .setTimestamp();
-
-            if (!command) {
-                await interaction.reply({ embeds: [Error], ephemeral: true });
-            } else {
-                await interaction.reply({ embeds: [Search], ephemeral: true });
+            for (let i = 0; i < commands.length; i++) {
+                main.addField(commands[i].name, commands[i].description, true);
             }
-        } else {
-            await interaction.reply({
-                embeds: [main],
-                ephemeral: true,
-            });
+            if (interaction.options.getString('command')) {
+                const cmdsearch = interaction.options.getString('command');
+                const command = commands.find((c: any) => cmdsearch == c.name);
+                const Search = new MessageEmbed()
+                    .setColor('#004cff')
+                    .setAuthor({
+                        name: `${author}`,
+                        iconURL: `https://cdn.discordapp.com/avatars/${userID}/${avatar}.webp?size=256`,
+                    })
+                    .addField(command.name, command.description, true)
+                    .setFooter({ text: 'Command Search' })
+                    .setTimestamp();
+
+                const Error = new MessageEmbed()
+                    .setColor('#ff0000')
+                    .setAuthor({
+                        name: `${author}`,
+                        iconURL: `https://cdn.discordapp.com/avatars/${userID}/${avatar}.webp?size=256`,
+                    })
+                    .setTitle(`Command name ${cmdsearch} not found.`)
+                    .setFooter({ text: 'Command Search' })
+                    .setTimestamp();
+
+                if (!command) {
+                    await interaction.reply({
+                        embeds: [Error],
+                        ephemeral: true,
+                    });
+                } else {
+                    await interaction.reply({
+                        embeds: [Search],
+                        ephemeral: true,
+                    });
+                }
+            } else {
+                await interaction.reply({
+                    embeds: [main],
+                    ephemeral: true,
+                });
+            }
         }
     },
 };

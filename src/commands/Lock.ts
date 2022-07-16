@@ -8,13 +8,17 @@ export = {
         .setDescription('Locks your vehicle')
         .setDMPermission(false),
     async execute(interaction: CommandInteraction) {
-        await interaction.reply({
-            embeds: [
-                Lock.setDescription(
-                    bold(`${interaction.member?.user}`) +
-                        'has locked their vehicle!'
-                ),
-            ],
-        });
+        if (interaction.inCachedGuild()) {
+            if (interaction.inCachedGuild()) {
+                await interaction.reply({
+                    embeds: [
+                        Lock.setDescription(
+                            bold(`${interaction.member?.nickname}`) +
+                                'has locked their vehicle!'
+                        ),
+                    ],
+                });
+            }
+        }
     },
 };

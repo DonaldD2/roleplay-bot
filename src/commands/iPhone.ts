@@ -1,11 +1,11 @@
-import type { CommandInteraction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import { bold, channelMention, SlashCommandBuilder } from '@discordjs/builders';
-import Phone from '../models/Phone';
 import Text from '../components/embeds/Text';
 //@ts-ignore
 import createMobilePhoneNumber from 'random-mobile-numbers';
 import { Declined, Calling, Accepted } from '../components/embeds/Call';
 import * as CallButtons from '../components/buttons/Call';
+import userModel from '../models/user.model';
 
 export = {
     data: new SlashCommandBuilder()
@@ -112,288 +112,257 @@ export = {
         ),
 
     async execute(interaction: CommandInteraction) {
-        if (interaction.options.getSubcommand() === 'text') {
-            Phone.findOne(
-                { number: `${interaction.options.getString('number')}` },
-                'discordId number contacts',
-                async (err, phone) => {
-                    if (err) console.log(err);
-                    Text.setDescription(
-                        `${interaction.options.getString('text')}`
-                    );
+        if (interaction.inCachedGuild()) {
+            if (interaction.options.getSubcommand() === 'text') {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+                Text.setDescription(`${interaction.options.getString('text')}`);
+                Text.setAuthor({
+                    name: 'Unknown Number',
+                });
+                if (dbUser!.number) {
                     Text.setAuthor({
-                        name: 'Unknown Number',
+                        name: `${dbUser!.number}`,
                     });
-                    if ('number' in phone!) {
-                        Text.setAuthor({
-                            name: phone.number,
-                        });
-                    }
-
-                    if ('contacts' in phone!) {
-                        if (phone!.contacts.length > 0) {
-                            phone!.contacts.forEach((contact) => {
-                                Phone.findOne(
-                                    { discordId: interaction.user.id },
-                                    null,
-                                    (err, user) => {
-                                        if (err) console.log(err);
-                                        if (
-                                            //@ts-ignore
-                                            contact.number === user!.number
-                                        ) {
-                                            //@ts-ignore
-                                            Text.setAuthor({
-                                                name: contact.name,
-                                            });
-                                        }
-                                    }
-                                );
+                }
+                if (interaction.options.getAttachment('image')) {
+                    Text.setImage(
+                        `${
+                            interaction.options.getAttachment('image')?.proxyURL
+                        }`
+                    );
+                }
+                const sendTo = await userModel.findOne({
+                    number: interaction.options.getString('number'),
+                });
+                if (sendTo) {
+                    sendTo.contacts.forEach((contact) => {
+                        if (contact.number === dbUser!.number) {
+                            Text.setAuthor({
+                                name: `${contact.name}`,
                             });
                         }
-                    }
-                    if (interaction.options.getAttachment('image')) {
-                        Text.setImage(
-                            `${
-                                interaction.options.getAttachment('image')
-                                    ?.proxyURL
-                            }`
-                        );
-                    }
-
-                    await interaction.client.users.cache
-                        .get(phone!.discordId)
-                        ?.send({ embeds: [Text] });
-                    await interaction.reply({
-                        content: 'Text Sent!',
+                    });
+                    interaction.client.users.cache
+                        .get(sendTo.discordId)
+                        ?.send({ embeds: [Text] })
+                        .then(async () => {
+                            interaction.reply({
+                                content: 'Text Sent!',
+                                ephemeral: true,
+                            });
+                        });
+                } else {
+                    interaction.reply({ content: 'Number not found' });
+                }
+            } else if (interaction.options.getSubcommand() === 'new') {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+                if (dbUser!.number) {
+                    interaction.reply({
+                        content: 'You already have a number!',
+                        ephemeral: true,
+                    });
+                } else {
+                    const number = createMobilePhoneNumber('USA');
+                    dbUser!.number = number;
+                    await dbUser!.save();
+                    interaction.reply({
+                        content: `Your new number is ${number}`,
                         ephemeral: true,
                     });
                 }
-            );
-        } else if (interaction.options.getSubcommand() === 'new') {
-            Phone.findOne(
-                //@ts-ignore
-                { discordId: `${interaction.member?.id}` },
-                'number',
-                async (err, phone) => {
-                    if (phone) {
-                        await interaction.reply({
-                            content: 'You already have a phone number!',
+            } else if (interaction.options.getSubcommand() === 'reset') {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+                if (!dbUser!.number) {
+                    interaction.reply({
+                        content: "You don't have a number!",
+                        ephemeral: true,
+                    });
+                } else {
+                    dbUser!.number = '';
+                    await dbUser!.save();
+                    interaction.reply({
+                        content: 'Your number has been reset!',
+                        ephemeral: true,
+                    });
+                }
+            } else if (interaction.options.getSubcommand() === 'add') {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+                const contact = {
+                    name: interaction.options.getString('name') as string,
+                    number: interaction.options.getString('number') as string,
+                };
+                dbUser!.contacts.push(contact);
+                await dbUser!.save();
+                interaction.reply({
+                    content: 'Contact added!',
+                    ephemeral: true,
+                });
+            } else if (interaction.options.getSubcommand() === 'remove') {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+                if (!dbUser!.number) {
+                    interaction.reply({
+                        content: "You don't have a number!",
+                        ephemeral: true,
+                    });
+                } else {
+                    const contact = dbUser!.contacts.find(
+                        (contact) =>
+                            contact.number ===
+                            (interaction.options.getString('number') as string)
+                    );
+                    if (contact) {
+                        dbUser!.contacts.splice(
+                            dbUser!.contacts.indexOf(contact),
+                            1
+                        );
+                        await dbUser!.save();
+                        interaction.reply({
+                            content: 'Contact removed!',
                             ephemeral: true,
                         });
                     } else {
-                        if (err) console.log(err);
-                        const number = createMobilePhoneNumber('USA');
-                        const newPhone = new Phone({
-                            //@ts-ignore
-                            discordId: `${interaction.member?.id}`,
-                            number: `${number}`,
-                        });
-                        newPhone.save();
-                        await interaction.reply({
-                            content: `Your new phone number is ${number}`,
+                        interaction.reply({
+                            content: 'Contact not found!',
                             ephemeral: true,
                         });
                     }
                 }
-            );
-        } else if (interaction.options.getSubcommand() === 'reset') {
-            Phone.findOneAndRemove(
-                { discordId: `${interaction.member?.user.id}` },
-                null,
-                (err) => {
-                    if (err) console.log(err);
-                }
-            );
-            await interaction.reply({
-                content: `Your phone number has been reset`,
-                ephemeral: true,
-            });
-        } else if (interaction.options.getSubcommand() === 'add') {
-            Phone.findOne(
-                { discordId: `${interaction.member?.user.id}` },
-                'contacts',
-                async (err, phone) => {
-                    if (err) console.log(err);
-                    if (!phone) {
-                        await interaction.reply({
-                            content: 'You do not have a phone number!',
-                            ephemeral: true,
-                        });
-                        const newContact = {
-                            name: interaction.options.getString('name'),
-                            number: interaction.options.getString('number'),
-                        };
-                        //@ts-ignore
-                        phone.contacts.push(newContact);
-                        await phone!.save();
-                        await interaction.reply({
-                            content: `Contact added!`,
-                            ephemeral: true,
-                        });
-                    }
-                }
-            );
-        } else if (interaction.options.getSubcommand() === 'remove') {
-            Phone.findOne(
-                { discordId: `${interaction.member?.user.id}` },
-                'contacts',
-                async (err, phone) => {
-                    if (err) console.log(err);
-                    const contact = phone!.contacts.find(
-                        (contact) =>
-                            //@ts-ignore
-                            contact.number ===
-                            interaction.options.getString('number')
-                    );
-                    phone!.contacts.splice(
-                        //@ts-ignore
-                        phone.contacts.indexOf(contact)
-                    );
-                    await phone!.save();
-                    await interaction.reply({
-                        content: `Contact removed!`,
+            } else if (interaction.options.getSubcommand() === 'list') {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+                if (dbUser!.contacts.length > 0) {
+                    interaction.reply({
+                        content: 'You have no contacts!',
                         ephemeral: true,
                     });
                 }
-            );
-        } else if (interaction.options.getSubcommand() === 'list') {
-            Phone.findOne(
-                { discordId: `${interaction.member?.user.id}` },
-                'contacts',
-                async (err, phone) => {
-                    if (err) console.log(err);
-                    let contacts = '';
-                    if ('contacts' in phone!) {
-                        if (phone!.contacts.length > 0) {
-                            phone!.contacts.forEach((contact) => {
-                                contacts += `${contact.name}: ${contact.number}\n`;
-                            });
-                            await interaction.reply({
-                                embeds: [
-                                    {
-                                        title: 'Contacts',
-                                        description: `${contacts}`,
-                                    },
-                                ],
-                                ephemeral: true,
+
+                const contactList = dbUser!.contacts.map(
+                    (contact) => `${contact.name} - ${contact.number}`
+                );
+                interaction.reply({
+                    content: `Your contacts are: ${contactList.join('\n')}`,
+                    ephemeral: true,
+                });
+            } else if (
+                interaction.options.getSubcommand() === 'get' &&
+                interaction.options.getSubcommand() === 'number'
+            ) {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+                if (!dbUser!.number) {
+                    interaction.reply({
+                        content: "You don't have a number!",
+                        ephemeral: true,
+                    });
+                } else {
+                    interaction.reply({
+                        content: `Your number is ${dbUser!.number}`,
+                        ephemeral: true,
+                    });
+                }
+            } else if (interaction.options.getSubcommand() === 'call') {
+                if (!interaction.member?.voice.channelId) {
+                    return interaction.reply({
+                        content:
+                            'Please join a voice channel before using this command.',
+                        ephemeral: true,
+                    });
+                }
+                if (!interaction.options.getMember('user')!.voice.channelId) {
+                    return interaction.reply({
+                        content:
+                            'Both users must be in a voice channel before using this command.',
+                        ephemeral: true,
+                    });
+                }
+                if (
+                    interaction.options.getMember('user') ===
+                        interaction.member ||
+                    interaction.options.getMember('user')?.id ===
+                        '881241382184972351'
+                ) {
+                    return interaction.reply({
+                        embeds: [Declined],
+                        ephemeral: true,
+                    });
+                }
+
+                interaction.reply({
+                    embeds: [
+                        Calling.setDescription(
+                            `<a:telephone:858107183308603393> ${bold(
+                                interaction.options.getMember(
+                                    'user'
+                                ) as unknown as string
+                            )} you are getting a call from ${bold(
+                                interaction.member as unknown as string
+                            )} in ${channelMention(
+                                interaction.member?.voice.channelId
+                            )}\nPress ${bold('Accept')} to join`
+                        ),
+                    ],
+                    components: [CallButtons.default],
+                });
+                const collector =
+                    interaction.channel?.createMessageComponentCollector({
+                        componentType: 'BUTTON',
+                        time: 15000,
+                    });
+
+                collector?.on('collect', async (i) => {
+                    if (i.customId === 'accept') {
+                        if (
+                            i.user.id ===
+                            interaction.options.getMember('user')?.id
+                        ) {
+                            interaction.options
+                                .getMember('user')!
+                                .voice.setChannel(
+                                    interaction.member?.voice.channel
+                                );
+                            interaction.editReply({
+                                embeds: [Accepted],
                             });
                         } else {
-                            await interaction.reply({
-                                content: `You have no contacts!`,
+                            interaction.followUp({
+                                content: 'You cannot accept this call.',
+                                ephemeral: true,
+                            });
+                        }
+                    } else {
+                        if (
+                            i.user.id ===
+                            interaction.options.getMember('user')?.id
+                        ) {
+                            interaction.editReply({ embeds: [Declined] });
+                        } else {
+                            interaction.followUp({
+                                content: 'You cannot decline this call.',
                                 ephemeral: true,
                             });
                         }
                     }
-                }
-            );
-        } else if (interaction.options.getSubcommand() === 'get-number') {
-            Phone.findOne(
-                { discordId: `${interaction.member?.user.id}` },
-                'number',
-                async (err, phone) => {
-                    if (err) console.log(err);
-                    await interaction.reply({
-                        content: `Your phone number is ${phone!.number}`,
-                        ephemeral: true,
-                    });
-                }
-            );
-        } else if (interaction.options.getSubcommand() === 'call') {
-            //@ts-ignore
-            if (!interaction.member?.voice.channelId) {
-                return await interaction.reply({
-                    content:
-                        'Please join a voice channel before using this command.',
-                    ephemeral: true,
-                });
-            }
-            //@ts-ignore
-            if (!interaction.options.getMember('user').voice.channelId) {
-                return await interaction.reply({
-                    content:
-                        'Both users must be in a voice channel before using this command.',
-                    ephemeral: true,
-                });
-            }
-            if (
-                interaction.options.getMember('user') === interaction.member ||
-                //@ts-ignore
-                interaction.options.getMember('user')?.id ===
-                    '881241382184972351'
-            ) {
-                return await interaction.reply({
-                    embeds: [Declined],
-                    ephemeral: true,
-                });
-            }
-
-            await interaction.reply({
-                embeds: [
-                    Calling.setDescription(
-                        `<a:telephone:858107183308603393> ${bold(
-                            interaction.options.getMember(
-                                'user'
-                            ) as unknown as string
-                        )} you are getting a call from ${bold(
-                            interaction.member as unknown as string
-                        )} in ${channelMention(
-                            //@ts-ignore
-                            interaction.member?.voice.channelId
-                        )}\nPress ${bold('Accept')} to join`
-                    ),
-                ],
-                components: [CallButtons.default],
-            });
-            const collector =
-                interaction.channel?.createMessageComponentCollector({
-                    componentType: 'BUTTON',
-                    time: 15000,
                 });
 
-            collector?.on('collect', async (i) => {
-                if (i.customId === 'accept') {
-                    if (
-                        //@ts-ignore
-                        i.user.id === interaction.options.getMember('user')?.id
-                    ) {
-                        //@ts-ignore
-                        interaction.options.getMember('user').voice.setChannel(
-                            //@ts-ignore
-                            interaction.member?.voice.channel
-                        );
-                        await interaction.editReply({
-                            embeds: [Accepted],
-                        });
-                    } else {
-                        interaction.followUp({
-                            content: 'You cannot accept this call.',
-                            ephemeral: true,
-                        });
-                    }
-                } else {
-                    if (
-                        i.user.id ===
-                        //@ts-ignore
-                        interaction.options.getMember('user')?.id
-                    ) {
-                        //@ts-ignore
+                collector?.on('end', (collected) => {
+                    if (collected.size === 0) {
                         interaction.editReply({ embeds: [Declined] });
-                    } else {
-                        interaction.followUp({
-                            content: 'You cannot decline this call.',
-                            ephemeral: true,
-                        });
                     }
-                }
-            });
-
-            collector?.on('end', (collected) => {
-                if (collected.size === 0) {
-                    //@ts-ignore
-                    interaction.editReply({ embeds: [Declined] });
-                }
-            });
+                });
+            }
         }
     },
 };

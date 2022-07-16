@@ -1,7 +1,7 @@
 import type { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import Inventory from '../models/Inventory';
-import { Found } from '../components/embeds/Inventory';
+import Found from '../components/embeds/Inventory';
+import userModel from '../models/user.model';
 
 export = {
     data: new SlashCommandBuilder()
@@ -42,154 +42,84 @@ export = {
         ),
 
     async execute(interaction: CommandInteraction) {
-        if (interaction.options.getSubcommand() === 'add') {
-            Inventory.findOne(
-                //@ts-ignore
-                { discordId: `${interaction.member?.id}` },
-                'items',
-                async (err, inventory) => {
-                    if (err) console.log(err);
-                    if (inventory) {
-                        Inventory.updateOne(
-                            //@ts-ignore
-                            { discordId: `${interaction.member?.id}` },
-                            {
-                                $push: {
-                                    items: `${interaction.options.getString(
-                                        'item'
-                                    )}`,
-                                },
-                            },
-                            null,
-                            async (err) => {
-                                if (err) console.log(err);
-                                await interaction.reply({
-                                    content: `${interaction.options.getString(
-                                        'item'
-                                    )} has been added to your inventory`,
-                                    ephemeral: true,
-                                });
-                            }
-                        );
-                    } else {
-                        Inventory.create({
-                            //@ts-ignore
-                            discordId: `${interaction.member?.id}`,
-                            items: [`${interaction.options.getString('item')}`],
-                        });
-                        await interaction.reply({
-                            content: `${interaction.options.getString(
-                                'item'
-                            )} has been added to your inventory`,
-                            ephemeral: true,
-                        });
-                    }
-                }
-            );
-        } else if (interaction.options.getSubcommand() === 'remove') {
-            Inventory.findOne(
-                //@ts-ignore
-                { discordId: `${interaction.member?.id}` },
-                'items',
-                async (err, inventory) => {
-                    if (err) console.log(err);
-                    if (inventory) {
-                        Inventory.updateOne(
-                            //@ts-ignore
-                            { discordId: `${interaction.member?.id}` },
-                            {
-                                $pull: {
-                                    items: `${interaction.options.getString(
-                                        'item'
-                                    )}`,
-                                },
-                            },
-                            null,
-                            async (err) => {
-                                if (err) console.log(err);
-                                await interaction.reply({
-                                    content: `${interaction.options.getString(
-                                        'item'
-                                    )} has been removed from your inventory`,
-                                    ephemeral: true,
-                                });
-                            }
-                        );
-                    } else {
-                        await interaction.reply({
-                            content: `You don't have any items`,
-                            ephemeral: true,
-                        });
-                    }
-                }
-            );
-        } else if (interaction.options.getSubcommand() === 'list') {
-            Inventory.findOne(
-                //@ts-ignore
-                { discordId: `${interaction.member?.id}` },
-                'items',
-                async (err, inventory) => {
-                    if (err) console.log(err);
-                    if (!inventory) {
-                        await interaction.reply({
-                            embeds: [Found.setDescription(`No items Found`)],
-                            ephemeral: true,
-                        });
-                        return;
-                    }
-                    if ('items' in inventory!) {
-                        if (inventory!.items.length > 0) {
-                            Found.description = '';
-                            inventory!.items.forEach((item) => {
-                                Found.description += `\n${item}, `;
-                            });
-                            await interaction.reply({
-                                embeds: [Found],
-                                ephemeral: true,
-                            });
-                        } else {
-                            await interaction.reply({
-                                embeds: [
-                                    Found.setDescription(`No items Found`),
-                                ],
+        if (interaction.inCachedGuild()) {
+            if (interaction.options.getSubcommand() === 'add') {
+                userModel
+                    .findOne({
+                        discordId: interaction.member?.id,
+                    })
+                    .then(async (dbUser) => {
+                        if (dbUser) {
+                            dbUser.items.push(
+                                interaction.options.getString('item') as string
+                            );
+                            await dbUser.save();
+                            interaction.reply({
+                                content: `Added ${interaction.options.getString(
+                                    'item'
+                                )} to your inventory`,
                                 ephemeral: true,
                             });
                         }
-                    } else {
-                        await interaction.reply({
-                            embeds: [Found.setDescription(`No items Found`)],
-                            ephemeral: true,
-                        });
-                    }
-                }
-            );
-        } else if (interaction.options.getSubcommand() === 'reset') {
-            Inventory.findOne(
-                //@ts-ignore
-                { discordId: `${interaction.member?.id}` },
-                null,
-                async (err, inventory) => {
-                    if (err) console.log(err);  
-                    if (!inventory) {
-                        await interaction.reply({
-                            content: `You don't have any items`,
-                            ephemeral: true,
-                        });
-                        return;
-                    }
-                })
-            Inventory.findOneAndDelete(
-                //@ts-ignore
-                { discordId: `${interaction.member?.id}` },
-                null,
-                async (err) => {
-                    if (err) console.log(err);
-                    await interaction.reply({
-                        content: `Your inventory has been reset`,
-                        ephemeral: true,
                     });
-                }
-            );
+            } else if (interaction.options.getSubcommand() === 'remove') {
+                const dbUser = await userModel
+                    .findOne({
+                        discordId: interaction.member?.id,
+                    })
+
+                        if (dbUser) {
+                            const item = interaction.options.getString(
+                                'item'
+                            ) as string;
+                            const index = dbUser.items.indexOf(item);
+                            if (index > -1) {
+                                dbUser.items.splice(index, 1);
+                                await dbUser.save();
+                                interaction.reply({
+                                    content: `Removed ${item} from your inventory`,
+                                    ephemeral: true,
+                                });
+                            } else {
+                                interaction.reply({
+                                    content: `You don't have ${item} in your inventory`,
+                                    ephemeral: true,
+                                });
+                            }
+                        }
+                    
+            } else if (interaction.options.getSubcommand() === 'list') {
+                const dbUser = await userModel
+                    .findOne({
+                        discordId: interaction.member?.id,
+                    })
+                    
+                        if (dbUser) {
+                            interaction.reply({
+                                embeds: [
+                                    Found.setDescription(
+                                        dbUser.items.join('\n')
+                                    ),
+                                ],
+                            });
+                        }
+                    
+            } else if (interaction.options.getSubcommand() === 'reset') {
+                const dbUser = await userModel
+                    .findOne({
+                        discordId: interaction.member?.id,
+                    })
+
+                        if (dbUser) {
+                            dbUser.items = [];
+                            await dbUser.save();
+                            interaction.reply({
+                                content: `Reset your inventory`,
+                                ephemeral: true,
+                            });
+                        }
+                    
+            }
         }
     },
 };

@@ -1,6 +1,6 @@
 import type { CommandInteraction } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
-import Server from '../models/Server';
+import { SlashCommandBuilder, userMention } from '@discordjs/builders';
+import userModel from '../models/user.model';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import {
     Verified,
@@ -48,73 +48,72 @@ export = {
         ),
 
     async execute(interaction: CommandInteraction) {
-        if (interaction.options.getSubcommand() === 'verify-user') {
-            const user = interaction.options.getUser('user');
-            const server = await Server.findOne({
-                where: {
-                    serverId: interaction.guild?.id,
-                },
-            });
-            if (server!.verifiedUsers.includes(user!.id)) {
-                await interaction.reply({
-                    content: `${user!.username} is already verified`,
+        if (interaction.inCachedGuild()) {
+            if (interaction.options.getSubcommand() === 'verify-user') {
+                const user = interaction.options.getUser('user');
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.options.getUser('user')?.id,
+                }).exec();
+                if (dbUser?.verifiedServers.includes(interaction.guildId)) {
+                    interaction.reply({
+                        content: `${user!.username} is already verified`,
+                        ephemeral: true,
+                    });
+                } else {
+                    dbUser!.verifiedServers.push(interaction.guildId);
+                    await dbUser!.save();
+                    interaction.reply({
+                        embeds: [
+                            Verified.setDescription(
+                                `${user!.username} is now verified`
+                            ),
+                        ],
+                        ephemeral: true,
+                    });
+                }
+            } else if (
+                interaction.options.getSubcommand() === 'unverify-user'
+            ) {
+                const user = interaction.options.getUser('user');
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.options.getUser('user')?.id,
+                });
+                if (!dbUser?.verifiedServers.includes(interaction.guildId)) {
+                    interaction.reply({
+                        content: `${user!.username} is not verified`,
+                        ephemeral: true,
+                    });
+                } else {
+                    dbUser!.verifiedServers = dbUser!.verifiedServers.filter(
+                        (id) => id !== interaction.guildId
+                    );
+                    await dbUser!.save();
+                    interaction.reply({
+                        embeds: [
+                            UnVerified.setDescription(
+                                `${user!.username} is now unverified`
+                            ),
+                        ],
+                        ephemeral: true,
+                    });
+                }
+            } else if (
+                interaction.options.getSubcommand() === 'get-verified-users'
+            ) {
+                const dbUser = await userModel.find(undefined);
+                let verifiedUsers = '';
+                dbUser.forEach(async (user) => {
+                    if (user.verifiedServers.includes(interaction.guildId)) {
+                        verifiedUsers += `${user.discordId} - ${userMention(
+                            user.discordId
+                        )}\n`;
+                    }
+                });
+                interaction.reply({
+                    embeds: [VerifiedList.setDescription(verifiedUsers)],
                     ephemeral: true,
                 });
-                return;
             }
-            server?.verifiedUsers.push(user?.id as string);
-            await server?.save();
-            await interaction.reply({
-                embeds: [
-                    Verified.setDescription(
-                        `${user?.username} has been verified`
-                    ),
-                ],
-                ephemeral: true,
-            });
-        } else if (interaction.options.getSubcommand() === 'unverify-user') {
-            const user = interaction.options.getUser('user');
-            const server = await Server.findOne({
-                where: {
-                    serverId: interaction.guild?.id,
-                },
-            });
-            if (!server!.verifiedUsers.includes(user!.id)) {
-                await interaction.reply({
-                    content: `${user!.username} is not verified`,
-                    ephemeral: true,
-                });
-                return;
-            }
-            server?.verifiedUsers.splice(
-                server?.verifiedUsers.indexOf(user?.id as string),
-                1
-            );
-            await server?.save();
-            await interaction.reply({
-                embeds: [
-                    UnVerified.setDescription(
-                        `${user?.username} has been un-verified`
-                    ),
-                ],
-                ephemeral: true,
-            });
-        } else if (
-            interaction.options.getSubcommand() === 'get-verified-users'
-        ) {
-            const server = await Server.findOne({
-                where: {
-                    serverId: interaction.guild?.id,
-                },
-            });
-            const verifiedUsers: string[] = server?.verifiedUsers as string[];
-            const verifiedUsersString: string = verifiedUsers
-                ?.map((user) => `<@${user}>`)
-                .join(', ');
-            await interaction.reply({
-                embeds: [VerifiedList.setDescription(verifiedUsersString)],
-                ephemeral: true,
-            });
         }
     },
 };
