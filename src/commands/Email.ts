@@ -75,6 +75,11 @@ export = {
                         content: 'Sent!',
                         ephemeral: true,
                     });
+                } else {
+                    await interaction.reply({
+                        content: 'You have not set an email!',
+                        ephemeral: true,
+                    });
                 }
             } else if (interaction.options.getSubcommand() === 'set-email') {
                 const dbUser = await userModel.findOne({
