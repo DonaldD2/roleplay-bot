@@ -1,4 +1,4 @@
-import type { CommandInteraction, EmbedAuthorData } from 'discord.js';
+import type { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import Tweet from '../components/embeds/Tweet';
 import userModel from '../models/user.model';
@@ -46,63 +46,30 @@ export = {
     async execute(interaction: CommandInteraction) {
         if (interaction.inCachedGuild()) {
             if (interaction.options.getSubcommand() === 'post') {
-                if (interaction.options.getAttachment('image')) {
-                    Tweet.setImage(
-                        `${
-                            interaction.options.getAttachment('image')?.proxyURL
-                        }`
-                    );
-                }
-
-                const dbUser = await userModel.findOne({
-                    discordId: interaction.member?.id,
-                });
-
-                if (
-                    dbUser?.verifiedServers!.includes(
-                        interaction.guildId as string
-                    )
-                ) {
-                    Tweet.setTitle('<:verified:869045206857711657> TWOTTER');
-                }
-                const author: EmbedAuthorData = {
-                    name: interaction.member?.user.username,
-                    iconURL: interaction.user.avatarURL() as string,
-                };
-                if (interaction.member?.nickname) {
-                    author.name = interaction.member?.nickname;
-                }
-                if (dbUser!.twitter!.username) {
-                    author.name = dbUser!.twitter!.username;
-                }
-                if (dbUser!.twitter!.pfp) {
-                    author.iconURL = dbUser!.twitter!.pfp;
-                }
-                interaction.channel
+                await interaction.deferReply()
+                Tweet(interaction, interaction.options.getString('content') as string, interaction.options.getAttachment('image')?.proxyURL).then(embed => {
+                    interaction.channel
                     ?.send({
                         embeds: [
-                            Tweet.setDescription(
-                                `${interaction.options.getString('content')}`
-                            ).setAuthor(author),
-                        ],
+                        embed as MessageEmbed],
                     })
                     .then(async (msg) => {
                         msg.react('<:like:995422257600016414>');
-                        // msg.react('<:retweet:995421485063745706>');
-                    });
-                interaction.reply({
-                    content: 'Sent!',
-                    ephemeral: true,
-                });
-                Tweet.setImage('')
-                Tweet.setTitle('<:twitter:858110570087972884> TWOTTER');
+                        msg.react('<:retweet:995421485063745706>');
+                    }).then(() => {
+                        interaction.reply({
+                            content: 'Sent!',
+                            ephemeral: true,
+                        });
+                })
+            })
                 if (interaction.options.getString('content')?.includes('<@')) {
                     interaction.options
                         .getString('content')
                         ?.split(' ')
-                        .forEach(async (val) => {
-                            /<@!?(\d+)>/.test(val)
-                                ? await interaction.channel?.send(`${val}`)
+                        .forEach(async (user) => {
+                            /<@!?(\d+)>/.test(user)
+                                ? interaction.channel?.send(`${user}`)
                                 : null;
                         });
                 }

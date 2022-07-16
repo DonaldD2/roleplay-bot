@@ -24,7 +24,7 @@ export = {
                             interaction.options.getMember('user')!
                                 .nickname as unknown as string
                         )}\n\nYou are now allowed to use your map to locate ${
-                            interaction.member?.nickname
+                           bold(interaction.member?.nickname as string)
                         }`
                     ),
                 ],
