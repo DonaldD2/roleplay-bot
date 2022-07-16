@@ -18,6 +18,6 @@ export default async (interaction: CommandInteraction) => {
             .setTimestamp();
         return embed;
     } else {
-        return null;
+        return;
     }
 };

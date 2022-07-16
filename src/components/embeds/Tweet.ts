@@ -38,6 +38,6 @@ export default async (
         }
         return embed;
     } else {
-        return null;
+        return;
     }
 };

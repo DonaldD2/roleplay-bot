@@ -1,5 +1,25 @@
-import { MessageEmbed } from 'discord.js';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import userModel from '../../models/user.model';
 
-export default new MessageEmbed().setTimestamp().setDescription(`Searching `);
-
-export const Found = new MessageEmbed().setTitle('Items Found:').setTimestamp();
+export default async (interaction: CommandInteraction) => {
+    if (interaction.inCachedGuild()) {
+        const embed = new MessageEmbed()
+            .setTitle('Items Found:')
+            .setTimestamp();
+        const dbUser = await userModel.findOne({
+            discordId: interaction.member.id,
+        });
+        embed.description = '';
+        if (dbUser!.items!.length != 0) {
+            dbUser!.items!.forEach((item) => {
+                embed.description += `${item}\n`;
+            });
+            return embed;
+        } else {
+            embed.setDescription(`No Items Found`);
+            return embed;
+        }
+    } else {
+        return;
+    }
+};
