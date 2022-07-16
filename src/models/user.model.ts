@@ -2,7 +2,7 @@ import { Schema, model, Document } from 'mongoose';
 interface IUser extends Document {
     discordId: string;
     verifiedServers?: string[];
-    number?: string
+    number?: string;
     contacts?: [{ name?: string; number?: string }];
     items?: string[];
     twitter?: {

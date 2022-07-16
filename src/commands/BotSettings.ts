@@ -51,9 +51,11 @@ export = {
         if (interaction.inCachedGuild()) {
             if (interaction.options.getSubcommand() === 'verify-user') {
                 const user = interaction.options.getUser('user');
-                const dbUser = await userModel.findOne({
-                    discordId: interaction.options.getUser('user')?.id,
-                }).exec();
+                const dbUser = await userModel
+                    .findOne({
+                        discordId: interaction.options.getUser('user')?.id,
+                    })
+                    .exec();
                 if (dbUser?.verifiedServers!.includes(interaction.guildId)) {
                     interaction.reply({
                         content: `${user!.username} is already verified`,

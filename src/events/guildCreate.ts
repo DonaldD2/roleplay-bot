@@ -11,7 +11,12 @@ export = {
                     discordId: member.id,
                     verifiedServers: [],
                     number: '',
-                    contacts: [],
+                    contacts: [
+                        {
+                            name: '',
+                            number: '',
+                        },
+                    ],
                     items: [],
                     twitter: {
                         username: '',

@@ -29,7 +29,7 @@ export = {
                                 {
                                     name: '',
                                     number: '',
-                                }
+                                },
                             ],
                             items: [],
                             twitter: {

@@ -63,62 +63,54 @@ export = {
                         }
                     });
             } else if (interaction.options.getSubcommand() === 'remove') {
-                const dbUser = await userModel
-                    .findOne({
-                        discordId: interaction.member?.id,
-                    })
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
 
-                        if (dbUser) {
-                            const item = interaction.options.getString(
-                                'item'
-                            ) as string;
-                            const index = dbUser.items!.indexOf(item);
-                            if (index > -1) {
-                                dbUser.items!.splice(index, 1);
-                                await dbUser.save();
-                                interaction.reply({
-                                    content: `Removed ${item} from your inventory`,
-                                    ephemeral: true,
-                                });
-                            } else {
-                                interaction.reply({
-                                    content: `You don't have ${item} in your inventory`,
-                                    ephemeral: true,
-                                });
-                            }
-                        }
-                    
+                if (dbUser) {
+                    const item = interaction.options.getString(
+                        'item'
+                    ) as string;
+                    const index = dbUser.items!.indexOf(item);
+                    if (index > -1) {
+                        dbUser.items!.splice(index, 1);
+                        await dbUser.save();
+                        interaction.reply({
+                            content: `Removed ${item} from your inventory`,
+                            ephemeral: true,
+                        });
+                    } else {
+                        interaction.reply({
+                            content: `You don't have ${item} in your inventory`,
+                            ephemeral: true,
+                        });
+                    }
+                }
             } else if (interaction.options.getSubcommand() === 'list') {
-                const dbUser = await userModel
-                    .findOne({
-                        discordId: interaction.member?.id,
-                    })
-                    
-                        if (dbUser) {
-                            interaction.reply({
-                                embeds: [
-                                    Found.setDescription(
-                                        dbUser.items!.join('\n')
-                                    ),
-                                ],
-                            });
-                        }
-                    
-            } else if (interaction.options.getSubcommand() === 'reset') {
-                const dbUser = await userModel
-                    .findOne({
-                        discordId: interaction.member?.id,
-                    })
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
 
-                        if (dbUser) {
-                            dbUser.items = [];
-                            await dbUser.save();
-                            interaction.reply({
-                                content: `Reset your inventory`,
-                                ephemeral: true,
-                            });
-                        }
-                    
+                if (dbUser) {
+                    interaction.reply({
+                        embeds: [
+                            Found.setDescription(dbUser.items!.join('\n')),
+                        ],
+                    });
+                }
+            } else if (interaction.options.getSubcommand() === 'reset') {
+                const dbUser = await userModel.findOne({
+                    discordId: interaction.member?.id,
+                });
+
+                if (dbUser) {
+                    dbUser.items = [];
+                    await dbUser.save();
+                    interaction.reply({
+                        content: `Reset your inventory`,
+                        ephemeral: true,
+                    });
+                }
             }
         }
     },

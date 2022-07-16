@@ -255,9 +255,7 @@ export = {
                     content: `Your contacts are: ${contactList.join('\n')}`,
                     ephemeral: true,
                 });
-            } else if (
-                interaction.options.getSubcommand() === 'get'
-            ) {
+            } else if (interaction.options.getSubcommand() === 'get') {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.member?.id,
                 });

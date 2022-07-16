@@ -46,23 +46,26 @@ export = {
     async execute(interaction: CommandInteraction) {
         if (interaction.inCachedGuild()) {
             if (interaction.options.getSubcommand() === 'post') {
-                await interaction.deferReply()
-                Tweet(interaction, interaction.options.getString('content') as string, interaction.options.getAttachment('image')?.proxyURL).then(embed => {
+                Tweet(
+                    interaction,
+                    interaction.options.getString('content') as string,
+                    interaction.options.getAttachment('image')?.proxyURL
+                ).then((embed) => {
                     interaction.channel
-                    ?.send({
-                        embeds: [
-                        embed as MessageEmbed],
-                    })
-                    .then(async (msg) => {
-                        msg.react('<:like:995422257600016414>');
-                        msg.react('<:retweet:995421485063745706>');
-                    }).then(() => {
-                        interaction.reply({
-                            content: 'Sent!',
-                            ephemeral: true,
+                        ?.send({
+                            embeds: [embed as MessageEmbed],
+                        })
+                        .then(async (msg) => {
+                            msg.react('<:like:995422257600016414>');
+                            msg.react('<:retweet:995421485063745706>');
+                        })
+                        .then(() => {
+                            interaction.reply({
+                                content: 'Sent!',
+                                ephemeral: true,
+                            });
                         });
-                })
-            })
+                });
                 if (interaction.options.getString('content')?.includes('<@')) {
                     interaction.options
                         .getString('content')
