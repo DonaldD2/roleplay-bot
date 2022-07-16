@@ -59,7 +59,7 @@ export = {
                 });
 
                 if (
-                    dbUser?.verifiedServers.includes(
+                    dbUser?.verifiedServers!.includes(
                         interaction.guildId as string
                     )
                 ) {
@@ -72,11 +72,11 @@ export = {
                 if (interaction.member?.nickname) {
                     author.name = interaction.member?.nickname;
                 }
-                if (dbUser!.twitter.username) {
-                    author.name = dbUser!.twitter.username;
+                if (dbUser!.twitter!.username) {
+                    author.name = dbUser!.twitter!.username;
                 }
-                if (dbUser!.twitter.pfp) {
-                    author.iconURL = dbUser!.twitter.pfp;
+                if (dbUser!.twitter!.pfp) {
+                    author.iconURL = dbUser!.twitter!.pfp;
                 }
                 interaction.channel
                     ?.send({
@@ -94,6 +94,8 @@ export = {
                     content: 'Sent!',
                     ephemeral: true,
                 });
+                Tweet.setImage('')
+                Tweet.setTitle('<:twitter:858110570087972884> TWOTTER');
                 if (interaction.options.getString('content')?.includes('<@')) {
                     interaction.options
                         .getString('content')
@@ -114,10 +116,10 @@ export = {
                     discordId: interaction.member?.id,
                 });
                 if (username) {
-                    dbUser!.twitter.username = username;
+                    dbUser!.twitter!.username = username;
                 }
                 if (pfp) {
-                    dbUser!.twitter.pfp = pfp;
+                    dbUser!.twitter!.pfp = pfp;
                 }
                 await dbUser!.save();
                 if (!username && !pfp) {

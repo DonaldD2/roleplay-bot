@@ -54,13 +54,13 @@ export = {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.options.getUser('user')?.id,
                 }).exec();
-                if (dbUser?.verifiedServers.includes(interaction.guildId)) {
+                if (dbUser?.verifiedServers!.includes(interaction.guildId)) {
                     interaction.reply({
                         content: `${user!.username} is already verified`,
                         ephemeral: true,
                     });
                 } else {
-                    dbUser!.verifiedServers.push(interaction.guildId);
+                    dbUser!.verifiedServers!.push(interaction.guildId);
                     await dbUser!.save();
                     interaction.reply({
                         embeds: [
@@ -78,13 +78,13 @@ export = {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.options.getUser('user')?.id,
                 });
-                if (!dbUser?.verifiedServers.includes(interaction.guildId)) {
+                if (!dbUser?.verifiedServers!.includes(interaction.guildId)) {
                     interaction.reply({
                         content: `${user!.username} is not verified`,
                         ephemeral: true,
                     });
                 } else {
-                    dbUser!.verifiedServers = dbUser!.verifiedServers.filter(
+                    dbUser!.verifiedServers = dbUser!.verifiedServers!.filter(
                         (id) => id !== interaction.guildId
                     );
                     await dbUser!.save();
@@ -103,7 +103,7 @@ export = {
                 const dbUser = await userModel.find(undefined);
                 let verifiedUsers = '';
                 dbUser.forEach(async (user) => {
-                    if (user.verifiedServers.includes(interaction.guildId)) {
+                    if (user.verifiedServers!.includes(interaction.guildId)) {
                         verifiedUsers += `${user.discordId} - ${userMention(
                             user.discordId
                         )}\n`;

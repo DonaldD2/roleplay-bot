@@ -23,8 +23,8 @@ export = {
             const dbUser = await Server.findOne({
                 discordId: interaction.member.id,
             });
-            if (dbUser!.items.length != 0) {
-                dbUser!.items.forEach((item) => {
+            if (dbUser!.items!.length === 0) {
+                dbUser!.items!.forEach((item) => {
                     Found.description += `${item}\n`;
                 });
                 await interaction.editReply({ embeds: [Found] });
