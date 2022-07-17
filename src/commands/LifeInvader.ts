@@ -1,22 +1,22 @@
 import type { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import Tweet from '../components/embeds/Tweet';
+import LifeInvader from '../components/embeds/LifeInvader';
 import userModel from '../models/user.model';
 import checkStringForUser from '../components/functions/checkStringForUser';
 
 export = {
     data: new SlashCommandBuilder()
-        .setName('twitter')
-        .setDescription('Twitter commands')
+        .setName('life-invader')
+        .setDescription('Life Invader commands')
         .setDMPermission(false)
         .addSubcommand((subcommand) =>
             subcommand
                 .setName('post')
-                .setDescription('Post a tweet')
+                .setDescription('Send a post')
                 .addStringOption((option) =>
                     option
                         .setName('content')
-                        .setDescription('What you want to tweet')
+                        .setDescription('What you want to post')
                         .setRequired(true)
                 )
                 .addAttachmentOption((option) =>
@@ -47,7 +47,7 @@ export = {
     async execute(interaction: CommandInteraction) {
         if (interaction.inCachedGuild()) {
             if (interaction.options.getSubcommand() === 'post') {
-                Tweet(
+                LifeInvader(
                     interaction,
                     interaction.options.getString('content') as string,
                     interaction.options.getAttachment('image')?.proxyURL
@@ -58,7 +58,7 @@ export = {
                         })
                         .then(async (msg) => {
                             msg.react('<:like:995422257600016414>');
-                            msg.react('<:twitter-retweet:995421485063745706>');
+                            msg.react('<:liferepost:998031038938873951>');
                         })
                         .then(() => {
                             interaction.reply({
@@ -85,14 +85,14 @@ export = {
                     discordId: interaction.member?.id,
                 });
                 if (username) {
-                    dbUser!.twitter!.username = username;
+                    dbUser!.life!.username = username;
                 }
                 if (pfp) {
-                    dbUser!.twitter!.pfp = pfp;
+                    dbUser!.life!.pfp = pfp;
                 }
                 await dbUser!.save();
                 if (!username && !pfp) {
-                    dbUser!.twitter = {
+                    dbUser!.life = {
                         username: '',
                         pfp: '',
                     };
