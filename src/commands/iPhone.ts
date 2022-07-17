@@ -205,7 +205,7 @@ export = {
                         interaction.options.getString('contact')
                     ) {
                         const sendTo = await userModel.findOne({
-                            number: interaction.options.getString('contact'),
+                            number: contact.number,
                         });
                         if (sendTo) {
                             sendTo.contacts!.forEach((contact) => {
