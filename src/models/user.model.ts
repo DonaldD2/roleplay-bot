@@ -1,5 +1,5 @@
 import { Schema, model, Document } from 'mongoose';
-export interface IUser extends Document {
+interface IUser extends Document {
     discordId: string;
     verifiedServers?: string[];
     number?: string;
