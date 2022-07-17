@@ -2,6 +2,7 @@ import type { GuildMember } from "discord.js";
 import { IUser } from "../../models/user.model";
 
 export default async (dbUser: IUser, member: GuildMember) => {
+    if(!dbUser) return;
     if(!dbUser.discordId) dbUser.discordId = member.id;
     if(!dbUser.verifiedServers) dbUser.verifiedServers = [];
     if(!dbUser.number) dbUser.number = '';
