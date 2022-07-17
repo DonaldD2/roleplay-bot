@@ -4,10 +4,9 @@ import consola from 'consola';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { connect } from 'mongoose';
-import { config } from 'dotenv';
-config({ path: __dirname + '/.env' });
+import env from './env'
 
-connect(`${process.env.DB_URL}`).then(() => {
+connect(`${env.DB_URL}`).then(() => {
     consola.success('Connected to Database!');
 });
 
@@ -66,12 +65,12 @@ export const commands = fs
     .filter((file) => file.endsWith('.js'))
     .map((file) => require(`./commands/${file}`).data.toJSON());
 
-const rest = new REST({ version: '9' }).setToken(process.env.TOKEN as string);
+const rest = new REST({ version: '9' }).setToken(env.TOKEN as string);
 
 (async () => {
     try {
         await rest.put(
-            Routes.applicationCommands(process.env.CLIENTID as string),
+            Routes.applicationCommands(env.CLIENTID as string),
             {
                 body: commands,
             }
@@ -83,4 +82,4 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN as string);
     }
 })();
 
-client.login(process.env.TOKEN);
+client.login(env.TOKEN);
