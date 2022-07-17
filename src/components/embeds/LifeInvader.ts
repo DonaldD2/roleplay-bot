@@ -18,10 +18,10 @@ export default async (
         if (interaction.member?.nickname) {
             author.name = interaction.member?.nickname;
         }
-        if (dbUser!.life!.username) {
-            author.name = dbUser!.life!.username;
+        if (dbUser!.life!.username != '') {
+            author.name = dbUser!.life!.username as string;
         }
-        if (dbUser!.life!.pfp) {
+        if (dbUser!.life!.pfp != '') {
             author.iconURL = dbUser!.life!.pfp;
         }
         const embed = new MessageEmbed()

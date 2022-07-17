@@ -18,10 +18,10 @@ export default async (
         if (interaction.member?.nickname) {
             author.name = interaction.member?.nickname;
         }
-        if (dbUser!.twitter!.username) {
-            author.name = dbUser!.twitter!.username;
+        if (dbUser!.twitter!.username != '') {
+            author.name = dbUser!.twitter!.username as string;
         }
-        if (dbUser!.twitter!.pfp) {
+        if (dbUser!.twitter!.pfp != '') {
             author.iconURL = dbUser!.twitter!.pfp;
         }
         const embed = new MessageEmbed()

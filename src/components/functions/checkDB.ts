@@ -10,7 +10,7 @@ export default async (client: Client) => {
             const dbUser = await userModel.findOne({
                 discordId: member.id,
             });
-            userUpToDate(dbUser as IUser, member);
+            userUpToDate(dbUser as IUser, member)
             if (!dbUser) {
                 basicJSON.discordId = member.id;
                 userModel
