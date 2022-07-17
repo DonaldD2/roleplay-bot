@@ -111,10 +111,21 @@ export = {
                         )}\n`;
                     }
                 });
-                interaction.reply({
-                    embeds: [VerifiedList.setDescription(verifiedUsers)],
-                    ephemeral: true,
-                });
+                if (verifiedUsers === '') {
+                    interaction.reply({
+                        embeds: [
+                            VerifiedList.setDescription(
+                                `No verified users in this server`
+                            ),
+                        ],
+                        ephemeral: true,
+                    });
+                } else {
+                    interaction.reply({
+                        embeds: [VerifiedList.setDescription(verifiedUsers)],
+                        ephemeral: true,
+                    });
+                }
             }
         }
     },

@@ -18,7 +18,7 @@ export default async (
         if (interaction.member?.nickname) {
             author.name = interaction.member?.nickname;
         }
-        if(interaction.member?.user.avatarURL()) {
+        if (interaction.member?.user.avatarURL()) {
             author.iconURL = interaction.member?.user.avatarURL() as string;
         }
         if (dbUser!.life!.username != '') {

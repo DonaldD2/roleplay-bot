@@ -95,7 +95,8 @@ export = {
                     interaction.reply({
                         embeds: [
                             Found.setDescription(dbUser.items!.join('\n')),
-                        ], ephemeral: true,
+                        ],
+                        ephemeral: true,
                     });
                 }
             } else if (interaction.options.getSubcommand() === 'reset') {

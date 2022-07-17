@@ -10,11 +10,9 @@ export default async (client: Client) => {
             });
             if (!dbUser) {
                 basicJSON.discordId = member.id;
-                userModel
-                    .create(basicJSON)
-                    .catch((err) => {
-                        consola.error(err);
-                    });
+                userModel.create(basicJSON).catch((err) => {
+                    consola.error(err);
+                });
             }
         });
     });

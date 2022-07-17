@@ -12,7 +12,7 @@ interface IUser extends Document {
     life: {
         username?: string;
         pfp?: string;
-    }
+    };
     email?: string;
 }
 
@@ -36,7 +36,7 @@ export const basicJSON = {
         pfp: '',
     },
     email: '',
-}
+};
 
 export default model<IUser>(
     'users',
