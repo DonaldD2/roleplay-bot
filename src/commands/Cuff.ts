@@ -25,14 +25,16 @@ export = {
                         `${bold(
                             interaction.member?.nickname as unknown as string
                         )} cuffed ${bold(
-                            interaction.options.getMember(
-                                'user'
-                            )?.nickname as unknown as string
+                            interaction.options.getMember('user')
+                                ?.nickname as unknown as string
                         )}!`
                     ),
                 ],
             });
-            checkStringForUser(interaction, interaction.options.getMember('user') as unknown as string);
+            checkStringForUser(
+                interaction,
+                interaction.options.getMember('user') as unknown as string
+            );
         }
     },
 };

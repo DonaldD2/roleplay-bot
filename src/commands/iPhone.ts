@@ -199,29 +199,39 @@ export = {
                         }`
                     );
                 }
-                const sendTo = await userModel.findOne({
-                    number: interaction.options.getString('contact'),
-                });
-                if (sendTo) {
-                    sendTo.contacts!.forEach((contact) => {
-                        if (contact.number === dbUser!.number) {
-                            Text.setAuthor({
-                                name: `${contact.name}`,
+                dbUser!.contacts!.forEach(async (contact) => {
+                    if (
+                        contact.number ===
+                        interaction.options.getString('contact')
+                    ) {
+                        const sendTo = await userModel.findOne({
+                            number: interaction.options.getString('contact'),
+                        });
+                        if (sendTo) {
+                            sendTo.contacts!.forEach((contact) => {
+                                if (contact.number === dbUser!.number) {
+                                    Text.setAuthor({
+                                        name: `${contact.name}`,
+                                    });
+                                }
                             });
-                        }
-                    });
-                    interaction.client.users.cache
-                        .get(sendTo.discordId)
-                        ?.send({ embeds: [Text] })
-                        .then(async () => {
+                            interaction.client.users.cache
+                                .get(sendTo.discordId)
+                                ?.send({ embeds: [Text] })
+                                .then(async () => {
+                                    interaction.reply({
+                                        content: 'Text Sent!',
+                                        ephemeral: true,
+                                    });
+                                });
+                        } else {
                             interaction.reply({
-                                content: 'Text Sent!',
+                                content: 'Contact not found',
                                 ephemeral: true,
                             });
-                        });
-                } else {
-                    interaction.reply({ content: 'Number not found' });
-                }
+                        }
+                    }
+                });
             } else if (interaction.options.getSubcommand() === 'new') {
                 const dbUser = await userModel.findOne({
                     discordId: interaction.member?.id,
@@ -314,9 +324,10 @@ export = {
                     });
                 }
 
-                const contactList = dbUser!.contacts!.map(
-                    (contact) =>{ if(contact.number != undefined) `${contact.name} - ${contact.number}`}
-                );
+                const contactList = dbUser!.contacts!.map((contact) => {
+                    if (contact.number != undefined)
+                        `${contact.name} - ${contact.number}`;
+                });
                 interaction.reply({
                     content: `Your contacts are: ${contactList.join('\n')}`,
                     ephemeral: true,

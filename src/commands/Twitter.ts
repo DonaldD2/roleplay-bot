@@ -67,7 +67,12 @@ export = {
                             });
                         })
                         .then(() => {
-                            checkStringForUser(interaction, interaction.options.getString('content') as string);
+                            checkStringForUser(
+                                interaction,
+                                interaction.options.getString(
+                                    'content'
+                                ) as string
+                            );
                         });
                 });
             } else if (interaction.options.getSubcommand() === 'set-profile') {

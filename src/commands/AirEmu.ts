@@ -50,9 +50,7 @@ export = {
         ),
     async execute(interaction: CommandInteraction) {
         interaction.reply({
-            embeds: [
-                AirEmu(interaction!)
-            ],
+            embeds: [AirEmu(interaction!)],
         });
     },
 };
