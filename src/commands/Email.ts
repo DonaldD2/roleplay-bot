@@ -83,7 +83,7 @@ export = {
                 }
             } else if (interaction.options.getSubcommand() === 'set-email') {
                 const dbUser = await userModel.findOne({
-                    discordId: interaction.guildId,
+                    discordId: interaction.user.id,
                 });
                 dbUser!.email = interaction.options.getString(
                     'email'
