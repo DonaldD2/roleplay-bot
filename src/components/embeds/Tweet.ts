@@ -34,7 +34,7 @@ export default async (
             embed.setImage(image);
         }
         if (dbUser?.verifiedServers!.includes(interaction.guildId as string)) {
-            embed.setTitle('<:verified:869045206857711657> TWOTTER');
+            embed.setTitle('<:verified:869045206857711657> TWITTER');
         }
         return embed;
     } else {
