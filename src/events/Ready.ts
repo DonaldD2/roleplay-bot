@@ -7,14 +7,18 @@ export = {
     once: 'true',
     execute(client: Client) {
         consola.success(`Ready! Logged in as ${client.user?.tag}`);
-        const memberCount = client.guilds.cache.reduce(
-            (acc, guild) => acc + guild.memberCount,
-            0
-        );
-        client.user?.setActivity(`Over ${memberCount} Members`, {
-            type: 'WATCHING',
-        });
         checkDB(client);
         consola.success(`Ensured all users are in the database`);
+        setInterval(() => {
+            client.user?.setActivity(
+                `Over ${client.guilds.cache.reduce(
+                    (acc, guild) => acc + guild.memberCount,
+                    0
+                )} Members`,
+                {
+                    type: 'WATCHING',
+                }
+            );
+        }, 10000);
     },
 };
