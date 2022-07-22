@@ -1,6 +1,6 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
-export default new MessageEmbed()
+export default new EmbedBuilder()
     .setColor('#7D4698')
     .setAuthor({
         name: 'Anonymous',

@@ -1,4 +1,4 @@
-import type { CommandInteraction } from 'discord.js';
+import type { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import AirEmu from '../components/embeds/AirEmu';
 
@@ -50,7 +50,7 @@ export = {
         ),
     async execute(interaction: CommandInteraction) {
         interaction.reply({
-            embeds: [AirEmu(interaction!)],
+            embeds: [AirEmu(interaction) as EmbedBuilder],
         });
     },
 };

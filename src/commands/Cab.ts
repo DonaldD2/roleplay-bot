@@ -14,17 +14,19 @@ export = {
                 .setRequired(true)
         ),
     async execute(interaction: CommandInteraction) {
-        if (interaction.inCachedGuild()) {
-            const location = interaction.options.getString('location');
-            interaction.reply({
-                embeds: [
-                    Cab.setDescription(
-                        `A cab has been requested by ${
-                            interaction.member
-                        } at ${bold(location as string)}`
-                    ),
-                ],
-            });
+        if (interaction.isChatInputCommand()) {
+            if (interaction.inCachedGuild()) {
+                const location = interaction.options.getString('location');
+                interaction.reply({
+                    embeds: [
+                        Cab.setDescription(
+                            `A cab has been requested by ${
+                                interaction.member
+                            } at ${bold(location as string)}`
+                        ),
+                    ],
+                });
+            }
         }
     },
 };

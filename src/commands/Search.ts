@@ -1,4 +1,4 @@
-import type { CommandInteraction, MessageEmbed } from 'discord.js';
+import type { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import Found from '../components/embeds/Search';
 
@@ -17,7 +17,7 @@ export = {
         interaction.deferReply().then(() => {
             Found(interaction!).then((embed) => {
                 interaction.editReply({
-                    embeds: [embed as MessageEmbed],
+                    embeds: [embed as EmbedBuilder],
                 });
             });
         });

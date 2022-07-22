@@ -17,7 +17,7 @@ export = {
     async execute(interaction: CommandInteraction) {
         if (interaction.inCachedGuild()) {
             await interaction.reply({ embeds: [unCuffing] });
-            await setTimeout(3000);
+            await setTimeout(1500);
             await interaction.editReply({
                 embeds: [
                     unCuffed.setDescription(

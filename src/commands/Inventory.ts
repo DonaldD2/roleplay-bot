@@ -42,75 +42,79 @@ export = {
         ),
 
     async execute(interaction: CommandInteraction) {
-        if (interaction.inCachedGuild()) {
-            if (interaction.options.getSubcommand() === 'add') {
-                userModel
-                    .findOne({
+        if (interaction.isChatInputCommand()) {
+            if (interaction.inCachedGuild()) {
+                if (interaction.options.getSubcommand() === 'add') {
+                    userModel
+                        .findOne({
+                            discordId: interaction.member?.id,
+                        })
+                        .then(async (dbUser) => {
+                            if (dbUser) {
+                                dbUser.items!.push(
+                                    interaction.options.getString(
+                                        'item'
+                                    ) as string
+                                );
+                                await dbUser.save();
+                                interaction.reply({
+                                    content: `Added ${interaction.options.getString(
+                                        'item'
+                                    )} to your inventory`,
+                                    ephemeral: true,
+                                });
+                            }
+                        });
+                } else if (interaction.options.getSubcommand() === 'remove') {
+                    const dbUser = await userModel.findOne({
                         discordId: interaction.member?.id,
-                    })
-                    .then(async (dbUser) => {
-                        if (dbUser) {
-                            dbUser.items!.push(
-                                interaction.options.getString('item') as string
-                            );
+                    });
+
+                    if (dbUser) {
+                        const item = interaction.options.getString(
+                            'item'
+                        ) as string;
+                        const index = dbUser.items!.indexOf(item);
+                        if (index > -1) {
+                            dbUser.items!.splice(index, 1);
                             await dbUser.save();
                             interaction.reply({
-                                content: `Added ${interaction.options.getString(
-                                    'item'
-                                )} to your inventory`,
+                                content: `Removed ${item} from your inventory`,
+                                ephemeral: true,
+                            });
+                        } else {
+                            interaction.reply({
+                                content: `You don't have ${item} in your inventory`,
                                 ephemeral: true,
                             });
                         }
+                    }
+                } else if (interaction.options.getSubcommand() === 'list') {
+                    const dbUser = await userModel.findOne({
+                        discordId: interaction.member?.id,
                     });
-            } else if (interaction.options.getSubcommand() === 'remove') {
-                const dbUser = await userModel.findOne({
-                    discordId: interaction.member?.id,
-                });
 
-                if (dbUser) {
-                    const item = interaction.options.getString(
-                        'item'
-                    ) as string;
-                    const index = dbUser.items!.indexOf(item);
-                    if (index > -1) {
-                        dbUser.items!.splice(index, 1);
-                        await dbUser.save();
+                    if (dbUser) {
                         interaction.reply({
-                            content: `Removed ${item} from your inventory`,
-                            ephemeral: true,
-                        });
-                    } else {
-                        interaction.reply({
-                            content: `You don't have ${item} in your inventory`,
+                            embeds: [
+                                Found.setDescription(dbUser.items!.join('\n')),
+                            ],
                             ephemeral: true,
                         });
                     }
-                }
-            } else if (interaction.options.getSubcommand() === 'list') {
-                const dbUser = await userModel.findOne({
-                    discordId: interaction.member?.id,
-                });
-
-                if (dbUser) {
-                    interaction.reply({
-                        embeds: [
-                            Found.setDescription(dbUser.items!.join('\n')),
-                        ],
-                        ephemeral: true,
+                } else if (interaction.options.getSubcommand() === 'reset') {
+                    const dbUser = await userModel.findOne({
+                        discordId: interaction.member?.id,
                     });
-                }
-            } else if (interaction.options.getSubcommand() === 'reset') {
-                const dbUser = await userModel.findOne({
-                    discordId: interaction.member?.id,
-                });
 
-                if (dbUser) {
-                    dbUser.items = [];
-                    await dbUser.save();
-                    interaction.reply({
-                        content: `Reset your inventory`,
-                        ephemeral: true,
-                    });
+                    if (dbUser) {
+                        dbUser.items = [];
+                        await dbUser.save();
+                        interaction.reply({
+                            content: `Reset your inventory`,
+                            ephemeral: true,
+                        });
+                    }
                 }
             }
         }

@@ -66,17 +66,19 @@ export = {
                 )
         ),
     async execute(interaction: CommandInteraction) {
-        const location = interaction.options.getString('location');
-        const status = interaction.options.getString('status');
+        if (interaction.isChatInputCommand()) {
+            const location = interaction.options.getString('location');
+            const status = interaction.options.getString('status');
 
-        interaction.reply({
-            embeds: [
-                AmmuNation.setDescription(
-                    `The AmmuNation in ${bold(
-                        location as string
-                    )} is now ${bold(status as string)}!`
-                ),
-            ],
-        });
+            interaction.reply({
+                embeds: [
+                    AmmuNation.setDescription(
+                        `The AmmuNation in ${bold(
+                            location as string
+                        )} is now ${bold(status as string)}!`
+                    ),
+                ],
+            });
+        }
     },
 };

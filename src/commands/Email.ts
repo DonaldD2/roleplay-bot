@@ -44,55 +44,60 @@ export = {
                 )
         ),
     async execute(interaction: CommandInteraction) {
-        if (interaction.inCachedGuild()) {
-            if (interaction.options.getSubcommand() === 'send') {
-                if (interaction.options.getAttachment('image')) {
-                    Email.setImage(
-                        `${
-                            interaction.options.getAttachment('image')?.proxyURL
-                        }`
-                    );
-                }
+        if (interaction.isChatInputCommand()) {
+            if (interaction.inCachedGuild()) {
+                if (interaction.options.getSubcommand() === 'send') {
+                    if (interaction.options.getAttachment('image')) {
+                        Email.setImage(
+                            `${
+                                interaction.options.getAttachment('image')
+                                    ?.proxyURL
+                            }`
+                        );
+                    }
 
-                const dbUser = await userModel.findOne({
-                    discordId: interaction.member?.id,
-                });
-
-                if (dbUser!.email) {
-                    const sendTo = await userModel.findOne({
-                        email: interaction.options.getString('to'),
+                    const dbUser = await userModel.findOne({
+                        discordId: interaction.member?.id,
                     });
-                    interaction.client.users.cache
-                        .get(sendTo!.discordId)
-                        ?.send({ embeds: [Email] })
-                        .then(async () => {
-                            interaction.reply({
-                                content: 'Email Sent!',
-                                ephemeral: true,
-                            });
+
+                    if (dbUser!.email) {
+                        const sendTo = await userModel.findOne({
+                            email: interaction.options.getString('to'),
                         });
-                    await interaction.reply({
-                        content: 'Sent!',
-                        ephemeral: true,
+                        interaction.client.users.cache
+                            .get(sendTo!.discordId)
+                            ?.send({ embeds: [Email] })
+                            .then(async () => {
+                                interaction.reply({
+                                    content: 'Email Sent!',
+                                    ephemeral: true,
+                                });
+                            });
+                        await interaction.reply({
+                            content: 'Sent!',
+                            ephemeral: true,
+                        });
+                    } else {
+                        await interaction.reply({
+                            content: 'You have not set an email!',
+                            ephemeral: true,
+                        });
+                    }
+                } else if (
+                    interaction.options.getSubcommand() === 'set-email'
+                ) {
+                    const dbUser = await userModel.findOne({
+                        discordId: interaction.user.id,
                     });
-                } else {
-                    await interaction.reply({
-                        content: 'You have not set an email!',
+                    dbUser!.email = interaction.options.getString(
+                        'email'
+                    ) as string;
+                    await dbUser!.save();
+                    interaction.reply({
+                        content: 'Email set!',
                         ephemeral: true,
                     });
                 }
-            } else if (interaction.options.getSubcommand() === 'set-email') {
-                const dbUser = await userModel.findOne({
-                    discordId: interaction.user.id,
-                });
-                dbUser!.email = interaction.options.getString(
-                    'email'
-                ) as string;
-                await dbUser!.save();
-                interaction.reply({
-                    content: 'Email set!',
-                    ephemeral: true,
-                });
             }
         }
     },

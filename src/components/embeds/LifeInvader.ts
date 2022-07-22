@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import type { CommandInteraction, EmbedAuthorData } from 'discord.js';
 import userModel from '../../models/user.model';
 
@@ -27,7 +27,7 @@ export default async (
         if (dbUser!.life!.pfp != '') {
             author.iconURL = dbUser!.life!.pfp;
         }
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor('#ff0000')
             .setTitle('<:life:868996525127258154> Life Invader')
             .setDescription(content)

@@ -1,3 +1,3 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
-export default new MessageEmbed().setTimestamp().setTitle('📧 New Email');
+export default new EmbedBuilder().setTimestamp().setTitle('📧 New Email');

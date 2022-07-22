@@ -1,13 +1,13 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
-export const Verified = new MessageEmbed()
+export const Verified = new EmbedBuilder()
     .setTitle('User Verified')
     .setTimestamp();
 
-export const UnVerified = new MessageEmbed()
+export const UnVerified = new EmbedBuilder()
     .setTitle('User Unverified')
     .setTimestamp();
 
-export const VerifiedList = new MessageEmbed()
+export const VerifiedList = new EmbedBuilder()
     .setTitle('Verified Users')
     .setTimestamp();

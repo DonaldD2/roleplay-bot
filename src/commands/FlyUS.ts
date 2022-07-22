@@ -49,22 +49,24 @@ export = {
                 )
         ),
     async execute(interaction: CommandInteraction) {
-        if (interaction.inCachedGuild()) {
-            const location = interaction.options.getString('location');
-            const status = interaction.options.getString('status');
-            const number = interaction.options.getString('flight-number');
+        if (interaction.isChatInputCommand()) {
+            if (interaction.inCachedGuild()) {
+                const location = interaction.options.getString('location');
+                const status = interaction.options.getString('status');
+                const number = interaction.options.getString('flight-number');
 
-            interaction.reply({
-                embeds: [
-                    FlyUS.setDescription(
-                        `FlyUS Flight Number ${bold(
-                            number as string
-                        )} in ${bold(location as string)} is now ${bold(
-                            status as string
-                        )}!`
-                    ),
-                ],
-            });
+                interaction.reply({
+                    embeds: [
+                        FlyUS.setDescription(
+                            `FlyUS Flight Number ${bold(
+                                number as string
+                            )} in ${bold(location as string)} is now ${bold(
+                                status as string
+                            )}!`
+                        ),
+                    ],
+                });
+            }
         }
     },
 };

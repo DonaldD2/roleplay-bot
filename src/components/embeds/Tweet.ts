@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import type { CommandInteraction, EmbedAuthorData } from 'discord.js';
 import userModel from '../../models/user.model';
 
@@ -24,7 +24,7 @@ export default async (
         if (dbUser!.twitter!.pfp != '') {
             author.iconURL = dbUser!.twitter!.pfp;
         }
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor('#1d36f2')
             .setTitle('<:twitter:858110570087972884> TWITTER')
             .setDescription(content)

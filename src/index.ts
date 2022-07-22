@@ -1,5 +1,11 @@
 import fs from 'fs';
-import { Client, Collection, Intents, Interaction } from 'discord.js';
+import {
+    Client,
+    Partials,
+    Interaction,
+    Collection,
+    InteractionType,
+} from 'discord.js';
 import consola from 'consola';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
@@ -10,10 +16,9 @@ connect(`${env.DB_URL}`).then(() => {
     consola.success('Connected to Database!');
 });
 
-const intents = new Intents(32767);
 const client: Client | any = new Client({
-    intents,
-    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+    intents: 32767,
+    partials: [Partials.Message, Partials.Reaction, Partials.Channel],
 });
 
 client.commands = new Collection();
@@ -30,7 +35,7 @@ for (const _folder of commandFolders) {
 }
 
 client.on('interactionCreate', async (interaction: Interaction) => {
-    if (!interaction.isCommand()) return;
+    if (interaction.type !== InteractionType.ApplicationCommand) return;
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
     try {

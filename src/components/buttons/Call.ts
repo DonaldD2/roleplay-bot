@@ -1,15 +1,15 @@
-import { MessageActionRow, MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-export default new MessageActionRow().addComponents(
-    new MessageButton()
+export default new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
         .setCustomId('accept')
         .setLabel('Accept')
-        .setStyle('SUCCESS')
+        .setStyle(ButtonStyle.Primary)
         .setEmoji('858107173799198740'),
 
-    new MessageButton()
+    new ButtonBuilder()
         .setCustomId('decline')
         .setLabel('Decline')
-        .setStyle('DANGER')
+        .setStyle(ButtonStyle.Danger)
         .setEmoji('858107161266618369')
 );

@@ -1,4 +1,4 @@
-import type { CommandInteraction, MessageEmbed } from 'discord.js';
+import type { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import TwentyFourSeven from '../components/embeds/TwentyFourSeven';
 
@@ -93,7 +93,7 @@ export = {
 
     async execute(interaction: CommandInteraction) {
         TwentyFourSeven(interaction).then((embed) => {
-            interaction.reply({ embeds: [embed as MessageEmbed] });
+            interaction.reply({ embeds: [embed as EmbedBuilder] });
         });
     },
 };

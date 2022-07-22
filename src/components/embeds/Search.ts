@@ -1,19 +1,21 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import userModel from '../../models/user.model';
 
 export default async (interaction: CommandInteraction) => {
     if (interaction.inCachedGuild()) {
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle('Items Found:')
             .setTimestamp();
         const dbUser = await userModel.findOne({
             discordId: interaction.options.getMember('user'),
         });
-        embed.description = '';
+        embed.setDescription('');
         if (dbUser!.items!.length != 0) {
+            let items = '';
             dbUser!.items!.forEach((item) => {
-                embed.description += `${item}\n`;
+                items += `${item}\n`;
             });
+            embed.setDescription(items);
             return embed;
         } else {
             embed.setDescription(`No Items Found`);
