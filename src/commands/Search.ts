@@ -14,10 +14,10 @@ export = {
                 .setRequired(true)
         ),
     async execute(interaction: CommandInteraction) {
-            Found(interaction!).then((embed) => {
-                interaction.editReply({
-                    embeds: [embed as EmbedBuilder],
-                });
+        Found(interaction!).then((embed) => {
+            interaction.editReply({
+                embeds: [embed as EmbedBuilder],
             });
+        });
     },
 };

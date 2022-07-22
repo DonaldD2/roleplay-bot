@@ -186,7 +186,9 @@ export = {
                                 });
                             });
                     } else {
-                        await interaction.reply({ content: 'Number not found' });
+                        await interaction.reply({
+                            content: 'Number not found',
+                        });
                     }
                 } else if (
                     interaction.options.getSubcommand() === 'text-contact'
