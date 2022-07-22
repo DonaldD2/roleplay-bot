@@ -327,11 +327,6 @@ export = {
                 const contactList = dbUser!.contacts!.map((contact) => {
                     if (contact.number != undefined) {
                         `${contact.name} - ${contact.number}`;
-                    } else {
-                        return interaction.reply({
-                            content: 'You have no contacts!',
-                            ephemeral: true,
-                        });
                     }
                 });
                 interaction.reply({
