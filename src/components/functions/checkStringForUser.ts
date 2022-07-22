@@ -5,9 +5,9 @@ export default (interaction: CommandInteraction, content: string) => {
         if (content?.includes('<@')) {
             content.split(' ').forEach(async (user) => {
                 /<@!?(\d+)>/.test(user)
-                    ? interaction.channel?.send(`${user}`).then(msg => {
-                        msg.delete()
-                    })
+                    ? interaction.channel?.send(`${user}`).then((msg) => {
+                          msg.delete();
+                      })
                     : null;
             });
         }

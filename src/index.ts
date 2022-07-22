@@ -4,7 +4,7 @@ import consola from 'consola';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { connect } from 'mongoose';
-import env from './env'
+import env from './env';
 
 connect(`${env.DB_URL}`).then(() => {
     consola.success('Connected to Database!');
@@ -69,12 +69,9 @@ const rest = new REST({ version: '9' }).setToken(env.TOKEN as string);
 
 (async () => {
     try {
-        await rest.put(
-            Routes.applicationCommands(env.CLIENTID as string),
-            {
-                body: commands,
-            }
-        );
+        await rest.put(Routes.applicationCommands(env.CLIENTID as string), {
+            body: commands,
+        });
 
         consola.success('Successfully registered application commands.');
     } catch (error) {

@@ -394,7 +394,7 @@ export = {
                 const collector =
                     interaction.channel?.createMessageComponentCollector({
                         componentType: 'BUTTON',
-                        time: 15000,
+                        time: 30000,
                     });
 
                 collector?.on('collect', async (i) => {
@@ -412,7 +412,7 @@ export = {
                                 embeds: [Accepted],
                             });
                         } else {
-                            interaction.followUp({
+                            i.followUp({
                                 content: 'You cannot accept this call.',
                                 ephemeral: true,
                             });
@@ -424,7 +424,7 @@ export = {
                         ) {
                             interaction.editReply({ embeds: [Declined] });
                         } else {
-                            interaction.followUp({
+                            i.followUp({
                                 content: 'You cannot decline this call.',
                                 ephemeral: true,
                             });
