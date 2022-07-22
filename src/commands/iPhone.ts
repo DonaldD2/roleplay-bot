@@ -1,4 +1,8 @@
-import { APIActionRowComponent, APIMessageActionRowComponent, ComponentType } from 'discord.js';
+import {
+    APIActionRowComponent,
+    APIMessageActionRowComponent,
+    ComponentType,
+} from 'discord.js';
 import type { CommandInteraction } from 'discord.js';
 import { bold, channelMention, SlashCommandBuilder } from '@discordjs/builders';
 import Text from '../components/embeds/Text';
@@ -176,13 +180,13 @@ export = {
                             .get(sendTo.discordId)
                             ?.send({ embeds: [Text] })
                             .then(async () => {
-                                interaction.reply({
+                                await interaction.reply({
                                     content: 'Text Sent!',
                                     ephemeral: true,
                                 });
                             });
                     } else {
-                        interaction.reply({ content: 'Number not found' });
+                        await interaction.reply({ content: 'Number not found' });
                     }
                 } else if (
                     interaction.options.getSubcommand() === 'text-contact'
@@ -229,13 +233,13 @@ export = {
                                     .get(sendTo.discordId)
                                     ?.send({ embeds: [Text] })
                                     .then(async () => {
-                                        interaction.reply({
+                                        await interaction.reply({
                                             content: 'Text Sent!',
                                             ephemeral: true,
                                         });
                                     });
                             } else {
-                                interaction.reply({
+                                await interaction.reply({
                                     content: 'Contact not found',
                                     ephemeral: true,
                                 });
@@ -247,7 +251,7 @@ export = {
                         discordId: interaction.member?.id,
                     });
                     if (dbUser!.number) {
-                        interaction.reply({
+                        await interaction.reply({
                             content: 'You already have a number!',
                             ephemeral: true,
                         });
@@ -255,7 +259,7 @@ export = {
                         const number = createMobilePhoneNumber('USA');
                         dbUser!.number = number;
                         await dbUser!.save();
-                        interaction.reply({
+                        await interaction.reply({
                             content: `Your new number is ${number}`,
                             ephemeral: true,
                         });
@@ -265,14 +269,14 @@ export = {
                         discordId: interaction.member?.id,
                     });
                     if (!dbUser!.number) {
-                        interaction.reply({
+                        await interaction.reply({
                             content: "You don't have a number!",
                             ephemeral: true,
                         });
                     } else {
                         dbUser!.number = '';
                         await dbUser!.save();
-                        interaction.reply({
+                        await interaction.reply({
                             content: 'Your number has been reset!',
                             ephemeral: true,
                         });
@@ -289,7 +293,7 @@ export = {
                     };
                     dbUser!.contacts!.push(contact);
                     await dbUser!.save();
-                    interaction.reply({
+                    await interaction.reply({
                         content: 'Contact added!',
                         ephemeral: true,
                     });
@@ -298,7 +302,7 @@ export = {
                         discordId: interaction.member?.id,
                     });
                     if (!dbUser!.number) {
-                        interaction.reply({
+                        await interaction.reply({
                             content: "You don't have a number!",
                             ephemeral: true,
                         });
@@ -316,12 +320,12 @@ export = {
                                 1
                             );
                             await dbUser!.save();
-                            interaction.reply({
+                            await interaction.reply({
                                 content: 'Contact removed!',
                                 ephemeral: true,
                             });
                         } else {
-                            interaction.reply({
+                            await interaction.reply({
                                 content: 'Contact not found!',
                                 ephemeral: true,
                             });
@@ -343,7 +347,7 @@ export = {
                             `${contact.name} - ${contact.number}`;
                         }
                     });
-                    interaction.reply({
+                    await interaction.reply({
                         content: `Your contacts are: ${contactList.join('\n')}`,
                         ephemeral: true,
                     });
@@ -352,12 +356,12 @@ export = {
                         discordId: interaction.member?.id,
                     });
                     if (!dbUser!.number) {
-                        interaction.reply({
+                        await interaction.reply({
                             content: "You don't have a number!",
                             ephemeral: true,
                         });
                     } else {
-                        interaction.reply({
+                        await interaction.reply({
                             content: `Your number is ${dbUser!.number}`,
                             ephemeral: true,
                         });
@@ -391,7 +395,7 @@ export = {
                         });
                     }
 
-                    interaction.reply({
+                    await interaction.reply({
                         embeds: [
                             Calling.setDescription(
                                 `<a:telephone:858107183308603393> ${bold(

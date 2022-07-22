@@ -61,8 +61,8 @@ export = {
                                 msg.react('<:like:995422257600016414>');
                                 msg.react('<:liferepost:998031038938873951>');
                             })
-                            .then(() => {
-                                interaction.reply({
+                            .then(async () => {
+                                await interaction.reply({
                                     content: 'Sent!',
                                     ephemeral: true,
                                 });

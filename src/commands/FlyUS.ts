@@ -55,7 +55,7 @@ export = {
                 const status = interaction.options.getString('status');
                 const number = interaction.options.getString('flight-number');
 
-                interaction.reply({
+                await interaction.reply({
                     embeds: [
                         FlyUS.setDescription(
                             `FlyUS Flight Number ${bold(

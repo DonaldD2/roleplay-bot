@@ -24,7 +24,7 @@ export = {
         if (interaction.isChatInputCommand()) {
             if (interaction.inCachedGuild()) {
                 const status = interaction.options.getString('status');
-                return interaction.reply({
+                await interaction.reply({
                     embeds: [
                         BugStars.setDescription(
                             `BugStars is now ${bold(status as string)}`

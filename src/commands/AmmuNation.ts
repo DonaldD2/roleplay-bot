@@ -70,7 +70,7 @@ export = {
             const location = interaction.options.getString('location');
             const status = interaction.options.getString('status');
 
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     AmmuNation.setDescription(
                         `The AmmuNation in ${bold(

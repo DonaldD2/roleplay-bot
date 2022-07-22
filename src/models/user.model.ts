@@ -4,7 +4,7 @@ interface IUser extends Document {
     verifiedServers?: string[];
     number?: string;
     contacts: [{ name?: string; number?: string }];
-    items?: string[];
+    items: string[];
     twitter: {
         username?: string;
         pfp?: string;
@@ -26,7 +26,7 @@ export const basicJSON = {
             number: '',
         },
     ],
-    items: [],
+    items: [''],
     twitter: {
         username: '',
         pfp: '',
@@ -58,7 +58,7 @@ export default model<IUser>(
         },
         items: {
             type: [String],
-            required: false,
+            required: true,
         },
         twitter: {
             type: {

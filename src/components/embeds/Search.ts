@@ -9,11 +9,12 @@ export default async (interaction: CommandInteraction) => {
         const dbUser = await userModel.findOne({
             discordId: interaction.options.getMember('user'),
         });
-        embed.setDescription('');
-        if (dbUser!.items!.length != 0) {
+        if (dbUser!.items.length !== 0) {
             let items = '';
             dbUser!.items!.forEach((item) => {
-                items += `${item}\n`;
+                if (item != '') {
+                    items += `${item}\n`;
+                }
             });
             embed.setDescription(items);
             return embed;

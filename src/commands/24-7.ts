@@ -92,8 +92,8 @@ export = {
         ),
 
     async execute(interaction: CommandInteraction) {
-        TwentyFourSeven(interaction).then((embed) => {
-            interaction.reply({ embeds: [embed as EmbedBuilder] });
+        TwentyFourSeven(interaction).then(async (embed) => {
+            await interaction.reply({ embeds: [embed as EmbedBuilder] });
         });
     },
 };

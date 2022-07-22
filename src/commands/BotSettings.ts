@@ -60,14 +60,14 @@ export = {
                     if (
                         dbUser?.verifiedServers!.includes(interaction.guildId)
                     ) {
-                        interaction.reply({
+                        await interaction.reply({
                             content: `${user!.username} is already verified`,
                             ephemeral: true,
                         });
                     } else {
                         dbUser!.verifiedServers!.push(interaction.guildId);
                         await dbUser!.save();
-                        interaction.reply({
+                        await interaction.reply({
                             embeds: [
                                 Verified.setDescription(
                                     `${user!.username} is now verified`
@@ -86,7 +86,7 @@ export = {
                     if (
                         !dbUser?.verifiedServers!.includes(interaction.guildId)
                     ) {
-                        interaction.reply({
+                        await interaction.reply({
                             content: `${user!.username} is not verified`,
                             ephemeral: true,
                         });
@@ -96,7 +96,7 @@ export = {
                                 (id) => id !== interaction.guildId
                             );
                         await dbUser!.save();
-                        interaction.reply({
+                        await interaction.reply({
                             embeds: [
                                 UnVerified.setDescription(
                                     `${user!.username} is now unverified`
@@ -120,7 +120,7 @@ export = {
                         }
                     });
                     if (verifiedUsers === '') {
-                        interaction.reply({
+                        await interaction.reply({
                             embeds: [
                                 VerifiedList.setDescription(
                                     `No verified users in this server`
@@ -129,7 +129,7 @@ export = {
                             ephemeral: true,
                         });
                     } else {
-                        interaction.reply({
+                        await interaction.reply({
                             embeds: [
                                 VerifiedList.setDescription(verifiedUsers),
                             ],

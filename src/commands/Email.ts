@@ -68,7 +68,7 @@ export = {
                             .get(sendTo!.discordId)
                             ?.send({ embeds: [Email] })
                             .then(async () => {
-                                interaction.reply({
+                                await interaction.reply({
                                     content: 'Email Sent!',
                                     ephemeral: true,
                                 });
@@ -93,7 +93,7 @@ export = {
                         'email'
                     ) as string;
                     await dbUser!.save();
-                    interaction.reply({
+                    await interaction.reply({
                         content: 'Email set!',
                         ephemeral: true,
                     });

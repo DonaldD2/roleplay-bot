@@ -19,7 +19,7 @@ export = {
         if (interaction.inCachedGuild()) {
             await interaction.reply({ embeds: [Cuffing] });
             await setTimeout(1500);
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     Cuffed.setDescription(
                         `${bold(

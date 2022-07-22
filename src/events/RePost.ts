@@ -8,7 +8,7 @@ export = {
             const dbUser = await userModel.findOne({ discordId: user.id });
             const name = dbUser?.life?.username || user.username;
             const embed = reaction.message.embeds[0].toJSON();
-            embed.footer = {text: `${name} reposted`};
+            embed.footer = { text: `${name} reposted` };
             reaction.message.channel.send({
                 embeds: [embed],
             });

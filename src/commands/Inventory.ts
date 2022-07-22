@@ -57,7 +57,7 @@ export = {
                                     ) as string
                                 );
                                 await dbUser.save();
-                                interaction.reply({
+                                await interaction.reply({
                                     content: `Added ${interaction.options.getString(
                                         'item'
                                     )} to your inventory`,
@@ -78,12 +78,12 @@ export = {
                         if (index > -1) {
                             dbUser.items!.splice(index, 1);
                             await dbUser.save();
-                            interaction.reply({
+                            await interaction.reply({
                                 content: `Removed ${item} from your inventory`,
                                 ephemeral: true,
                             });
                         } else {
-                            interaction.reply({
+                            await interaction.reply({
                                 content: `You don't have ${item} in your inventory`,
                                 ephemeral: true,
                             });
@@ -93,12 +93,24 @@ export = {
                     const dbUser = await userModel.findOne({
                         discordId: interaction.member?.id,
                     });
+                    if (
+                        dbUser?.items!.length !== undefined &&
+                        dbUser?.items!.length !== 0
+                    ) {
+                        let items = '';
+                        dbUser.items!.forEach((item) => {
+                            if (items !== '') {
+                                items += item;
+                            }
+                        });
 
-                    if (dbUser) {
-                        interaction.reply({
-                            embeds: [
-                                Found.setDescription(dbUser.items!.join('\n')),
-                            ],
+                        await interaction.reply({
+                            embeds: [Found.setDescription(items)],
+                            ephemeral: true,
+                        });
+                    } else {
+                        await interaction.reply({
+                            content: 'You have no items in your inventory',
                             ephemeral: true,
                         });
                     }
@@ -110,7 +122,7 @@ export = {
                     if (dbUser) {
                         dbUser.items = [];
                         await dbUser.save();
-                        interaction.reply({
+                        await interaction.reply({
                             content: `Reset your inventory`,
                             ephemeral: true,
                         });

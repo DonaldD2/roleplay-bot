@@ -90,7 +90,11 @@ export = {
                         discordId: interaction.member?.id,
                     });
                     if (username) {
-                        dbUser!.twitter!.username = username;
+                        if (username.includes('☑️')) {
+                            dbUser!.life!.username = username.replace('☑️', '');
+                        } else {
+                            dbUser!.twitter!.username = username;
+                        }
                     }
                     if (pfp) {
                         dbUser!.twitter!.pfp = pfp;
