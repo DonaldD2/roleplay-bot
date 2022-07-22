@@ -7,7 +7,7 @@ export default async (interaction: CommandInteraction) => {
             .setTitle('Items Found:')
             .setTimestamp();
         const dbUser = await userModel.findOne({
-            discordId: interaction.member.id,
+            discordId: interaction.options.getMember('user'),
         });
         embed.description = '';
         if (dbUser!.items!.length != 0) {
