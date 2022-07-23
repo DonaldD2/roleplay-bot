@@ -1,5 +1,10 @@
-import { EmbedBuilder } from 'discord.js';
+import type { CommandInteraction } from 'discord.js';
+import userModel from '../../models/user.model';
 
-export default new EmbedBuilder()
-    .setTimestamp()
-    .setDescription('You turned your engine on successfully.');
+export default async (interaction: CommandInteraction) => {
+    const dbUser = await userModel.findOne({
+        discordId: interaction.user.id,
+    });
+    dbUser!.engine = true;
+    await dbUser!.save();
+}

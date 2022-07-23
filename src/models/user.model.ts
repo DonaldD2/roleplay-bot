@@ -14,6 +14,8 @@ interface IUser extends Document {
         pfp?: string;
     };
     email?: string;
+    engine: boolean;
+    gas: number;
 }
 
 export const basicJSON = {
@@ -36,6 +38,8 @@ export const basicJSON = {
         pfp: '',
     },
     email: '',
+    engine: false,
+    gas: 100,
 };
 
 export default model<IUser>(
@@ -77,6 +81,14 @@ export default model<IUser>(
         email: {
             type: String,
             required: false,
+        },
+        engine: {
+            type: Boolean,
+            required: true,
+        },
+        gas: {
+            type: Number,
+            required: true,
         },
     })
 );

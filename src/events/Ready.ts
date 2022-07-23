@@ -2,6 +2,8 @@ import consola from 'consola';
 import { ActivityType } from 'discord.js';
 import checkDB from '../components/functions/checkDB';
 import type { Client } from 'discord.js';
+import GasTicker from '../components/functions/GasTicker';
+
 export = {
     name: 'ready',
     once: 'true',
@@ -19,5 +21,10 @@ export = {
                 type: ActivityType.Watching,
             }
         );
+        client.guilds.cache.forEach(async (guild) => {
+            guild.members.cache.forEach(async (member) => {
+                GasTicker(member);
+            });
+        });
     },
 };

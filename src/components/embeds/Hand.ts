@@ -19,10 +19,10 @@ export default async (interaction: CommandInteraction) => {
                     (item) => item !== interaction.options.getString('item')
                 );
                 await send?.save();
-                    recieve?.items?.push(
-                        interaction.options.getString('item') as string
-                    );
-                    await recieve!.save();
+                recieve?.items?.push(
+                    interaction.options.getString('item') as string
+                );
+                await recieve!.save();
             }
         }
     }

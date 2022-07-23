@@ -8,8 +8,7 @@ export = {
         .setDescription('Turn off your vehicle engine')
         .setDMPermission(false),
     async execute(interaction: CommandInteraction) {
-        if (interaction.inCachedGuild()) {
-            await interaction.reply({ embeds: [EngineOff] });
-        }
+            EngineOff(interaction!)
+            await interaction.reply({ content: 'You turned your engine on successfully.', ephemeral: true });
     },
 };
