@@ -23,11 +23,6 @@ export default async (interaction: CommandInteraction) => {
                         interaction.options.getString('item') as string
                     );
                     await recieve!.save();
-            } else {
-                await interaction.reply({
-                    content: `You don't have that item`,
-                    ephemeral: true,
-                });
             }
         }
     }
