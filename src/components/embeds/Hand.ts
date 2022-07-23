@@ -19,25 +19,16 @@ export default async (interaction: CommandInteraction) => {
                     (item) => item !== interaction.options.getString('item')
                 );
                 await send?.save();
-                if (recieve?.items?.length !== undefined) {
-                    recieve!.items = recieve?.items?.concat(
+                    recieve?.items?.push(
                         interaction.options.getString('item') as string
                     );
                     await recieve!.save();
-                } else {
-                    recieve!.items = [
-                        interaction.options.getString('item') as string,
-                    ];
-                    await recieve!.save();
-                }
             } else {
-                interaction.reply({
-                    content: 'You do not have this item',
+                await interaction.reply({
+                    content: `You don't have that item`,
                     ephemeral: true,
                 });
             }
-        } else {
-            return;
         }
     }
 };
