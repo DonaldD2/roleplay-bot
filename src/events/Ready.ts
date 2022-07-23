@@ -7,8 +7,9 @@ export = {
     once: 'true',
     execute(client: Client) {
         consola.success(`Ready! Logged in as ${client.user?.tag}`);
-        checkDB(client);
-        consola.success(`Ensured all users are in the database`);
+        checkDB(client).then(() => {
+            consola.success(`Ensured database`);
+        });
         client.user?.setActivity(
             `Over ${client.guilds.cache.reduce(
                 (acc, guild) => acc + guild.memberCount,

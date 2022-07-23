@@ -11,3 +11,5 @@ export const UnVerified = new EmbedBuilder()
 export const VerifiedList = new EmbedBuilder()
     .setTitle('Verified Users')
     .setTimestamp();
+
+export const RoleSet = new EmbedBuilder().setTitle('Role Set').setTimestamp();

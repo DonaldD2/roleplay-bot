@@ -6,7 +6,9 @@ import {
     Verified,
     VerifiedList,
     UnVerified,
+    RoleSet,
 } from '../components/embeds/BotSettings';
+import serverModel from '../models/server.model';
 
 export = {
     data: new SlashCommandBuilder()
@@ -44,6 +46,22 @@ export = {
                     subcommand
                         .setName('get-verified-users')
                         .setDescription('Get all verified users in your server')
+                )
+        )
+        .addSubcommandGroup((subcommandGroup) =>
+            subcommandGroup
+                .setName('911-settings')
+                .setDescription('911 Settings')
+                .addSubcommand((subcommand) =>
+                    subcommand
+                        .setName('911-role')
+                        .setDescription('Set the 911 role')
+                        .addRoleOption((option) =>
+                            option
+                                .setName('role')
+                                .setDescription('The role to set')
+                                .setRequired(true)
+                        )
                 )
         ),
 
@@ -136,6 +154,27 @@ export = {
                             ephemeral: true,
                         });
                     }
+                } else if (interaction.options.getSubcommand() === '911-role') {
+                    const role = interaction.options.getRole('role');
+                    const dbServer = await serverModel.findOne({
+                        serverId: interaction.guildId,
+                    });
+                    if (dbServer?.emergency_role === role?.id) {
+                        return await interaction.reply({
+                            content: `${role!.name} is already the 911 role`,
+                            ephemeral: true,
+                        });
+                    }
+                    dbServer!.emergency_role = role?.id;
+                    await dbServer?.save();
+                    await interaction.reply({
+                        embeds: [
+                            RoleSet.setDescription(
+                                `${role?.name} is now the 911 role`
+                            ),
+                        ],
+                        ephemeral: true,
+                    });
                 }
             }
         }
