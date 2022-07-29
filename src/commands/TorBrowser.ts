@@ -1,6 +1,7 @@
 import type { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import Tor from '../components/embeds/Tor';
+import { EmbedBuilder } from 'discord.js';
 
 export = {
     data: new SlashCommandBuilder()
@@ -10,7 +11,7 @@ export = {
         .addStringOption((option) =>
             option
                 .setName('content')
-                .setDescription('What you want to tweet')
+                .setDescription('What you want to send')
                 .setRequired(true)
         )
         .addAttachmentOption((option) =>
@@ -22,18 +23,14 @@ export = {
     async execute(interaction: CommandInteraction) {
         if (interaction.isChatInputCommand()) {
             if (interaction.inCachedGuild()) {
-                if (interaction.options.getAttachment('image'))
-                    Tor.setImage(
-                        `${
-                            interaction.options.getAttachment('image')?.proxyURL
-                        }`
-                    );
-                await interaction.channel?.send({
-                    embeds: [
-                        Tor.setDescription(
-                            `${interaction.options.getString('content')}`
-                        ),
-                    ],
+                Tor(
+                    interaction,
+                    interaction.options.getString('content') as string,
+                    interaction.options.getAttachment('image')?.proxyURL
+                ).then(async (embed) => {
+                    await interaction.channel?.send({
+                        embeds: [embed as EmbedBuilder],
+                    });
                 });
                 if (interaction.options.getString('content')?.includes('<@')) {
                     interaction.options

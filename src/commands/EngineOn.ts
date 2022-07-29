@@ -8,7 +8,10 @@ export = {
         .setDescription('Turn on your vehicle engine')
         .setDMPermission(false),
     async execute(interaction: CommandInteraction) {
-        EngineOn(interaction!)
-        await interaction.reply({ content: 'You turned your engine on successfully.', ephemeral: true });
+        EngineOn(interaction!);
+        await interaction.reply({
+            content: 'You turned your engine on successfully.',
+            ephemeral: true,
+        });
     },
 };

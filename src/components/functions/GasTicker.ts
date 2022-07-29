@@ -10,11 +10,11 @@ export default async (member: GuildMember) => {
         if (dbUser!.engine === true) {
             dbUser!.gas -= 1;
         }
-        if(dbUser!.gas <= 0 && dbUser!.engine === true) {
+        if (dbUser!.gas === 0 && dbUser!.engine === true) {
             dbUser!.engine = false;
-            member.user.send('Your have ran out of gas.');
+            await member.user.send('Your have ran out of gas.');
         }
-        if(dbUser?.gas > 100) {
+        if (dbUser!.gas > 100) {
             dbUser!.gas = 100;
         }
     }, 60000);

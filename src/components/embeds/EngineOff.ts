@@ -6,5 +6,5 @@ export default async (interaction: CommandInteraction) => {
         discordId: interaction.user.id,
     });
     dbUser!.engine = false;
-    await dbUser!.save();
-}
+    // await dbUser!.save();
+};

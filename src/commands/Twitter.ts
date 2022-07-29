@@ -48,7 +48,7 @@ export = {
         if (interaction.isChatInputCommand()) {
             if (interaction.inCachedGuild()) {
                 if (interaction.options.getSubcommand() === 'post') {
-                    Tweet(
+                    await Tweet(
                         interaction,
                         interaction.options.getString('content') as string,
                         interaction.options.getAttachment('image')?.proxyURL

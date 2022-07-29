@@ -48,6 +48,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
             ephemeral: true,
         });
     }
+    return;
 });
 consola.success('Command Handler Loaded!');
 

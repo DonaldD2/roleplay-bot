@@ -412,7 +412,7 @@ export = {
                             ),
                         ],
                         components: [
-                            CallButtons.default as unknown as APIActionRowComponent<APIMessageActionRowComponent>,
+                            (await CallButtons.default()) as unknown as APIActionRowComponent<APIMessageActionRowComponent>,
                         ],
                     });
                     const collector =
@@ -464,5 +464,6 @@ export = {
                 }
             }
         }
+        return;
     },
 };

@@ -14,10 +14,8 @@ export = {
                 .setRequired(true)
         ),
     async execute(interaction: CommandInteraction) {
-        Found(interaction!).then((embed) => {
-            interaction.editReply({
-                embeds: [embed as EmbedBuilder],
-            });
+        await interaction.editReply({
+            embeds: [(await Found(interaction!)) as EmbedBuilder],
         });
     },
 };

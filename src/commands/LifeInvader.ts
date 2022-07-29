@@ -48,34 +48,37 @@ export = {
         if (interaction.isChatInputCommand()) {
             if (interaction.inCachedGuild()) {
                 if (interaction.options.getSubcommand() === 'post') {
-                    LifeInvader(
-                        interaction,
-                        interaction.options.getString('content') as string,
-                        interaction.options.getAttachment('image')?.proxyURL
-                    ).then((embed) => {
-                        interaction.channel
-                            ?.send({
-                                embeds: [embed as EmbedBuilder],
-                            })
-                            .then(async (msg) => {
-                                msg.react('<:like:995422257600016414>');
-                                msg.react('<:liferepost:998031038938873951>');
-                            })
-                            .then(async () => {
-                                await interaction.reply({
-                                    content: 'Sent!',
-                                    ephemeral: true,
-                                });
-                            })
-                            .then(() => {
-                                checkStringForUser(
+                    await interaction.channel
+                        ?.send({
+                            embeds: [
+                                (await LifeInvader(
                                     interaction,
                                     interaction.options.getString(
                                         'content'
-                                    ) as string
-                                );
+                                    ) as string,
+                                    interaction.options.getAttachment('image')
+                                        ?.proxyURL
+                                )) as EmbedBuilder,
+                            ],
+                        })
+                        .then(async (msg) => {
+                            msg.react('<:like:995422257600016414>');
+                            msg.react('<:liferepost:998031038938873951>');
+                        })
+                        .then(async () => {
+                            await interaction.reply({
+                                content: 'Sent!',
+                                ephemeral: true,
                             });
-                    });
+                        })
+                        .then(() => {
+                            checkStringForUser(
+                                interaction,
+                                interaction.options.getString(
+                                    'content'
+                                ) as string
+                            );
+                        });
                 } else if (
                     interaction.options.getSubcommand() === 'set-profile'
                 ) {
