@@ -29,7 +29,7 @@ export = {
                 embeds: [NineOneOne(interaction) as EmbedBuilder],
             })
             .then(async () => {
-                if(dbServer.emergency_role != '') {
+                if(dbServer?.emergency_role != '') {
                     interaction.channel?.send(`<@&${dbServer?.emergency_role}>`);
                 }
                 });
