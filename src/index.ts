@@ -53,7 +53,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 consola.success('Command Handler Loaded!');
 
 const eventFiles = fs
-    .readdirSync('./dist/events')
+    .readdirSync('./src/events')
     .filter((file) => file.endsWith('.js'));
 
 for (const file of eventFiles) {
@@ -67,7 +67,7 @@ for (const file of eventFiles) {
 consola.success('Event Handler Loaded!');
 
 export const commands = fs
-    .readdirSync(`dist/commands`)
+    .readdirSync(`src/commands`)
     .filter((file) => file.endsWith('.js'))
     .map((file) => require(`./commands/${file}`).data.toJSON());
 
