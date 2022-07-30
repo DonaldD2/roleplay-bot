@@ -22,11 +22,11 @@ const client: Client | any = new Client({
 });
 
 client.commands = new Collection();
-const commandFolders = fs.readdirSync('dist/commands');
+const commandFolders = fs.readdirSync('src/commands');
 
 for (const _folder of commandFolders) {
     const commandFiles = fs
-        .readdirSync(`dist/commands`)
+        .readdirSync(`src/commands`)
         .filter((file) => file.endsWith('.js'));
     for (const file of commandFiles) {
         const command = require(`./commands/${file}`);
