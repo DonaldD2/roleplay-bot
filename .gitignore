@@ -2,3 +2,5 @@ node_modules
 dist
 env.ts
 .idea
+*.js
+*.js.map

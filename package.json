@@ -4,7 +4,7 @@
     "description": "rp bot",
     "main": "./dist/index.js",
     "scripts": {
-        "Bot": "nodemon ./dist/index.js",
+        "Bot": "nodemon ./src/index.js",
         "Format": "npx prettier --write .",
         "TS Watch": "tsc --watch"
     },
