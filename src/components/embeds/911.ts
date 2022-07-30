@@ -13,7 +13,7 @@ export default (interaction: CommandInteraction) => {
             .setDescription(
                 `<@${interaction.member?.user.id}> ${bold(
                     'is calling 911'
-                )}!\n\n  ${bold('Location: ')} ${interaction.options.getString(
+                )}!\n\n${bold('Location: ')} ${interaction.options.getString(
                     'location'
                 )}\n\n${bold(`Description: `)} ${interaction.options.getString(
                     'description'
