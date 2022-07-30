@@ -5,7 +5,6 @@ import {
     Collection,
     InteractionType,
 } from 'discord.js';
-import consola from 'consola';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { connect } from 'mongoose';
@@ -13,7 +12,7 @@ import env from './env';
 import * as fs from "fs";
 
 connect(`${env.DB_URL}`).then(() => {
-    consola.success('Connected to Database!');
+    console.log('Connected to Database!');
 });
 
 const client: Client | any = new Client({
@@ -41,7 +40,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
     try {
         await command.execute(interaction);
     } catch (error) {
-        consola.error(error);
+        console.error(error);
         return interaction.reply({
             content:
                 'There was an error while executing this command! Contact the support team.',
@@ -50,7 +49,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
     }
     return;
 });
-consola.success('Command Handler Loaded!');
+console.log('Command Handler Loaded!');
 
 const eventFiles = fs
     .readdirSync('./src/events')
@@ -64,7 +63,7 @@ for (const file of eventFiles) {
         client.on(event.name, (...args: unknown[]) => event.execute(...args));
     }
 }
-consola.success('Event Handler Loaded!');
+console.log('Event Handler Loaded!');
 
 export const commands = fs
     .readdirSync(`src/commands`)
@@ -79,9 +78,9 @@ const rest = new REST({ version: '9' }).setToken(env.TOKEN as string);
             body: commands,
         });
 
-        consola.success('Successfully registered application commands.');
+        console.log('Successfully registered application commands.');
     } catch (error) {
-        consola.error(error);
+        throw new Error(error);
     }
 })();
 
