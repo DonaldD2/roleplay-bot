@@ -94,11 +94,10 @@ export = {
                         discordId: interaction.member?.id,
                     });
                     if (
-                        dbUser?.items!.length !== undefined &&
-                        dbUser?.items!.length !== 0
+                        dbUser?.items! !== ['']
                     ) {
                         let items = '';
-                        dbUser.items!.forEach((item) => {
+                        dbUser?.items!.forEach((item) => {
                             if (items !== '') {
                                 items += item;
                             }
