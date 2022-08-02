@@ -93,9 +93,7 @@ export = {
                     const dbUser = await userModel.findOne({
                         discordId: interaction.member?.id,
                     });
-                    if (
-                        dbUser?.items! !== ['']
-                    ) {
+                    if (dbUser?.items! !== ['']) {
                         let items = '';
                         dbUser?.items!.forEach((item) => {
                             if (items !== '') {

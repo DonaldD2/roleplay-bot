@@ -7,5 +7,4 @@ export default async (interaction: CommandInteraction) => {
     });
     dbUser!.engine = true;
     // await dbUser!.save();
-
 };

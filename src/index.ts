@@ -9,7 +9,7 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { connect } from 'mongoose';
 import env from './env';
-import * as fs from "fs";
+import * as fs from 'fs';
 
 connect(`${env.DB_URL}`).then(() => {
     console.log('Connected to Database!');

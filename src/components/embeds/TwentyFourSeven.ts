@@ -1,11 +1,11 @@
-import { EmbedBuilder } from 'discord.js';
-import type { CommandInteraction } from 'discord.js';
-import { bold } from '@discordjs/builders';
+import type {CommandInteraction} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
+import {bold} from '@discordjs/builders';
 
 export default async (interaction: CommandInteraction) => {
     if (interaction.isChatInputCommand()) {
         if (interaction.inCachedGuild()) {
-            const embed = new EmbedBuilder()
+            return new EmbedBuilder()
                 .setColor('#0db14b')
                 .setTitle('24/7')
                 .setThumbnail('https://i.file.glass/0eg7f.png')
@@ -17,7 +17,6 @@ export default async (interaction: CommandInteraction) => {
                     )}!`
                 )
                 .setTimestamp();
-            return embed;
         } else {
             return;
         }
