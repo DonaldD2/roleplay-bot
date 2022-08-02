@@ -9,7 +9,7 @@ export default async (client: Client) => {
         const dbServer = await serverModel.findOne({ serverId: guild.id });
         if (!dbServer) {
             basicServerJSON.serverId = guild.id;
-            serverModel.create(basicServerJSON);
+            await serverModel.create(basicServerJSON);
         }
         guild.members.cache.forEach(async (member) => {
             const dbUser = await userModel.findOne({
@@ -17,7 +17,7 @@ export default async (client: Client) => {
             });
             if (!dbUser) {
                 basicUserJSON.discordId = member.id;
-                userModel.create(basicUserJSON);
+                await userModel.create(basicUserJSON);
             }
         });
     });
