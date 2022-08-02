@@ -427,12 +427,12 @@ export = {
                                 i.user.id ===
                                 interaction.options.getMember('user')?.id
                             ) {
-                                interaction.options
+                                await interaction.options
                                     .getMember('user')!
                                     .voice.setChannel(
                                         interaction.member?.voice.channel
                                     );
-                                interaction.editReply({
+                                await interaction.editReply({
                                     embeds: [Accepted],
                                 });
                             } else {
@@ -446,7 +446,7 @@ export = {
                                 i.user.id ===
                                 interaction.options.getMember('user')?.id
                             ) {
-                                interaction.editReply({ embeds: [Declined] });
+                                await interaction.editReply({embeds: [Declined]});
                             } else {
                                 i.followUp({
                                     content: 'You cannot decline this call.',

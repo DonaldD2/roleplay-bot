@@ -1,7 +1,7 @@
 import { ActivityType } from 'discord.js';
 import checkDB from '../components/functions/checkDB';
 import type { Client } from 'discord.js';
-import GasTicker from '../components/functions/GasTicker';
+// import GasTicker from '../components/functions/GasTicker';
 
 export = {
     name: 'ready',
@@ -20,10 +20,10 @@ export = {
                 type: ActivityType.Watching,
             }
         );
-        client.guilds.cache.forEach(async (guild) => {
-            guild.members.cache.forEach(async (member) => {
-                await GasTicker(member);
-            });
-        });
+        // client.guilds.cache.forEach(async (guild) => {
+        //     guild.members.cache.forEach(async (member) => {
+        //         await GasTicker(member);
+        //     });
+        // });
     },
 };
