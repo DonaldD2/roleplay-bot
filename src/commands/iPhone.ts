@@ -434,6 +434,7 @@ export = {
                                     );
                                 await interaction.editReply({
                                     embeds: [Accepted],
+                                    components: [],
                                 });
                             } else {
                                 i.followUp({
@@ -446,7 +447,10 @@ export = {
                                 i.user.id ===
                                 interaction.options.getMember('user')?.id
                             ) {
-                                await interaction.editReply({embeds: [Declined]});
+                                await interaction.editReply({
+                                    embeds: [Declined],
+                                    components: [],
+                                });
                             } else {
                                 i.followUp({
                                     content: 'You cannot decline this call.',
@@ -458,7 +462,10 @@ export = {
 
                     collector?.on('end', (collected) => {
                         if (collected.size === 0) {
-                            interaction.editReply({ embeds: [Declined] });
+                            interaction.editReply({
+                                embeds: [Declined],
+                                components: [],
+                            });
                         }
                     });
                 }
