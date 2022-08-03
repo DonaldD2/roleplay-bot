@@ -11,7 +11,7 @@ import ms from 'ms';
 
 import Pulse from '../components/embeds/Pulse';
 
-module.exports = {
+exports = {
     data: new SlashCommandBuilder()
     .setName('pulse')
     .setDescription('Check someones pulse!')
