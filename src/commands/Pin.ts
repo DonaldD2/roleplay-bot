@@ -7,8 +7,9 @@ import {
     GuildMember,
 } from'discord.js';
 import ms from 'ms';
+import Pin from '../components/embeds/Pin';
 
-module.exports = {
+exports = {
     data: new SlashCommandBuilder()
     .setName('pin')
     .setDescription('Pin someone to the floor!')
@@ -24,12 +25,11 @@ module.exports = {
         const target = interaction.options.getMember('target');
 
         if(!target) return interaction.reply({content: "⚠️ | You have not pinged anyone!", ephemeral: true})
-        const embed = new EmbedBuilder()
-        .setTimestamp()
-        .setColor('#2e85c5')    
-        .setDescription(`${bold(interaction.member?.nickname as unknown as string)} is pinning ${bold(interaction.options.getMember('target')?.nickname as unknown as string)} to the floor!`)
 
-        interaction.reply({embeds: [embed]})
+        interaction.reply({embeds: [
+            Pin.setColor('#2e85c5')    .setDescription(`${bold(interaction.member?.nickname as unknown as string)} is pinning ${bold(interaction.options.getMember('target')?.nickname as unknown as string)} to the floor!`)
+        ],
+    })
         interaction.channel.send({content: `${target}`})
        
     }},
