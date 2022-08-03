@@ -4,9 +4,12 @@ import  {
     WebhookClient,
     SlashCommandBuilder,
 } from 'discord.js';
+
 import ms from 'ms';
 
-module.exports = {
+import BusinessAdvertisement from '../components/embeds/Business-Advertisement';
+
+exports = {
     data: new SlashCommandBuilder()
     .setName('business-advertisement')
     .setDescription(' Advertise a business!')
@@ -45,30 +48,30 @@ module.exports = {
         const Location = interaction.options.getString("location");
         const Status = interaction.options.getString("status");
 
-        const embed = new EmbedBuilder()
         if(!Logo) {
-            embed.setTimestamp()
-            embed.setColor('#2e85c5')     
-            embed.setTitle(`${Name}`)
-            embed.setDescription(`Information about ${Name} business bellow:`)
-            embed.addFields(
+            BusinessAdvertisement.setColor('#2e85c5')     
+            BusinessAdvertisement.setTitle(`${Name}`)
+            BusinessAdvertisement.setDescription(`Information about ${Name} business bellow:`)
+            BusinessAdvertisement.addFields(
                 {name: "Status", value: `${Status}`, inline: true},
                 {name: "Locaton", value: `${Location}`, inline: true},
             )
         } else {
-            embed.setTimestamp()
-            embed.setColor('#2e85c5')     
-            embed.setThumbnail(`${Logo}`)
-            embed.setTitle(`${Name}`)
-            embed.setDescription(`Information about ${Name} business bellow:`)
-            embed.addFields(
+            BusinessAdvertisement.setColor('#2e85c5')     
+            BusinessAdvertisement.setThumbnail(`${Logo}`)
+            BusinessAdvertisement.setTitle(`${Name}`)
+            BusinessAdvertisement.setDescription(`Information about ${Name} business bellow:`)
+            BusinessAdvertisement.addFields(
                 {name: "Status", value: `${Status}`, inline: true},
                 {name: "Locaton", value: `${Location}`, inline: true}
             )
         }
 
 
-        interaction.reply({embeds: [embed]})
+        interaction.reply({embeds: [
+            BusinessAdvertisement
+        ]
+    })
        
     },
 
