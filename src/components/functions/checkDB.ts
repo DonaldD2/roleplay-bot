@@ -5,7 +5,7 @@ import serverModel, {
 } from '../../models/server.model';
 
 export default async (client: Client) => {
-    client.guilds.cache.forEach(async (guild) => {
+    for (const guild of client.guilds.cache) {
         const dbServer = await serverModel.findOne({ serverId: guild.id });
         if (!dbServer) {
             basicServerJSON.serverId = guild.id;
@@ -20,5 +20,5 @@ export default async (client: Client) => {
                 await userModel.create(basicUserJSON);
             }
         });
-    });
+    }
 };

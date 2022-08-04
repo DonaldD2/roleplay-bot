@@ -1,39 +1,43 @@
 import {
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    WebhookClient,
+    type ChatInputCommandInteraction,
     SlashCommandBuilder,
     bold,
-    GuildMember,
-} from'discord.js';
-
-import ms from 'ms';
+} from 'discord.js';
 
 import Pulse from '../components/embeds/Pulse';
 
-exports = {
+export = {
     data: new SlashCommandBuilder()
-    .setName('pulse')
-    .setDescription('Check someones pulse!')
-    .addUserOption((option) =>
-        option
-        .setName('target')
-        .setDescription('Mention whos pulse you are checking!')
-        .setRequired(true)
-    ),
+        .setName('pulse')
+        .setDescription('Check someones pulse!')
+        .addUserOption((option) =>
+            option
+                .setName('target')
+                .setDescription('Mention whos pulse you are checking!')
+                .setRequired(true)
+        ),
 
-    async execute(interaction: ChatInputCommandInteraction) {
-        if (interaction.inCachedGuild()) {
+    async execute(interaction: ChatInputCommandInteraction<'cached'>) {
         const target = interaction.options.getMember('target');
 
-        if(!target) return interaction.reply({content: "⚠️ | You have not pinged anyone!", ephemeral: true})
+        if (!target)
+            return interaction.reply({
+                content: '⚠️ | You have not pinged anyone!',
+                ephemeral: true,
+            });
 
-        interaction.reply({embeds: [
-        Pulse.setColor('#2e85c5').setDescription(`${bold(interaction.member?.nickname as unknown as string)} is checking ${bold(interaction.options.getMember('target')?.nickname as unknown as string)} pulse!`)
-        ],
-    })
-        interaction.channel.send({content: `${target}`})
-       
-    }},
-
+        await interaction.reply({
+            embeds: [
+                Pulse.setDescription(
+                    `${bold(
+                        interaction.member?.nickname as unknown as string
+                    )} is checking ${bold(
+                        interaction.options.getMember('target')
+                            ?.nickname as unknown as string
+                    )} pulse!`
+                ),
+            ],
+        });
+        interaction.channel.send({ content: `${target}` });
+    },
 };

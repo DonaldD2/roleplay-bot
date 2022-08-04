@@ -1,6 +1,6 @@
-import type {CommandInteraction} from 'discord.js';
-import {EmbedBuilder} from 'discord.js';
-import {bold} from '@discordjs/builders';
+import type { CommandInteraction } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+import { bold } from '@discordjs/builders';
 
 export default async (interaction: CommandInteraction) => {
     if (interaction.isChatInputCommand()) {

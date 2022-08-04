@@ -5,7 +5,7 @@ import { setTimeout } from 'node:timers/promises';
 
 export = {
     data: new SlashCommandBuilder()
-        .setName('un-ziptue')
+        .setName('un-ziptie')
         .setDescription('Removes zipties from a user')
         .setDMPermission(false)
         .addUserOption((option) =>
@@ -14,22 +14,20 @@ export = {
                 .setDescription('The user to ziptie')
                 .setRequired(true)
         ),
-    async execute(interaction: CommandInteraction) {
-        if (interaction.inCachedGuild()) {
-            await interaction.reply({ embeds: [unZiptyping] });
-            await setTimeout(1500);
-            await interaction.editReply({
-                embeds: [
-                    unZiptied.setDescription(
-                        `${bold(
-                            interaction.member?.nickname as unknown as string
-                        )} unziptied ${bold(
-                            interaction.options.getMember('user')
-                                ?.nickname as unknown as string
-                        )}!`
-                    ),
-                ],
-            });
-        }
+    async execute(interaction: CommandInteraction<'cached'>) {
+        await interaction.reply({ embeds: [unZiptyping] });
+        await setTimeout(1500);
+        await interaction.editReply({
+            embeds: [
+                unZiptied.setDescription(
+                    `${bold(
+                        interaction.member?.nickname as unknown as string
+                    )} unziptied ${bold(
+                        interaction.options.getMember('user')
+                            ?.nickname as unknown as string
+                    )}!`
+                ),
+            ],
+        });
     },
 };

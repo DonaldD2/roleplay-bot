@@ -1,37 +1,42 @@
 import {
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    WebhookClient,
+    type ChatInputCommandInteraction,
     SlashCommandBuilder,
     bold,
-    GuildMember,
-} from'discord.js';
-import ms from 'ms';
+} from 'discord.js';
 import Pin from '../components/embeds/Pin';
 
-exports = {
+export = {
     data: new SlashCommandBuilder()
-    .setName('pin')
-    .setDescription('Pin someone to the floor!')
-    .addUserOption((option) =>
-        option
-        .setName('target')
-        .setDescription('Mention who you are pinning!')
-        .setRequired(true)
-    ),
+        .setName('pin')
+        .setDescription('Pin someone to the floor!')
+        .addUserOption((option) =>
+            option
+                .setName('target')
+                .setDescription('Mention who you are pinning!')
+                .setRequired(true)
+        ),
 
-    async execute(interaction: ChatInputCommandInteraction) {
-        if (interaction.inCachedGuild()) {
+    async execute(interaction: ChatInputCommandInteraction<'cached'>) {
         const target = interaction.options.getMember('target');
 
-        if(!target) return interaction.reply({content: "⚠️ | You have not pinged anyone!", ephemeral: true})
+        if (!target)
+            return interaction.reply({
+                content: '⚠️ | You have not pinged anyone!',
+                ephemeral: true,
+            });
 
-        interaction.reply({embeds: [
-            Pin.setColor('#2e85c5')    .setDescription(`${bold(interaction.member?.nickname as unknown as string)} is pinning ${bold(interaction.options.getMember('target')?.nickname as unknown as string)} to the floor!`)
-        ],
-    })
-        interaction.channel.send({content: `${target}`})
-       
-    }},
-
+        await interaction.reply({
+            embeds: [
+                Pin.setDescription(
+                    `${bold(
+                        interaction.member?.nickname as unknown as string
+                    )} is pinning ${bold(
+                        interaction.options.getMember('target')
+                            ?.nickname as unknown as string
+                    )} to the floor!`
+                ),
+            ],
+        });
+        interaction.channel.send({ content: `${target}` });
+    },
 };

@@ -1,5 +1,5 @@
-import type { CommandInteraction } from 'discord.js';
-import { bold, SlashCommandBuilder } from '@discordjs/builders';
+import { type CommandInteraction, bold } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { Ziptied, Ziptying } from '../components/embeds/Ziptie';
 import { setTimeout } from 'node:timers/promises';
 import checkStringForUser from '../components/functions/checkStringForUser';
@@ -15,7 +15,7 @@ export = {
                 .setDescription('The user to cuff')
                 .setRequired(true)
         ),
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: CommandInteraction<'cached'>) {
         if (interaction.inCachedGuild()) {
             await interaction.reply({ embeds: [Ziptying] });
             await setTimeout(1500);
